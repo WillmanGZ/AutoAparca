@@ -1,5 +1,7 @@
 import customtkinter as ctk
 import tkinter as tk
+from tkinter import messagebox
+from Database import *
 
 # Configura el estilo de customtkinter
 ctk.set_appearance_mode("System")  # Puede ser "System", "Dark", o "Light"
@@ -38,7 +40,7 @@ boton_registrarse = ctk.CTkLabel(frame_login, text="Registrarse", font=("Century
 boton_registrarse.place(x=200, y=195)
 
 def boton_registrarse_click(event):
-    print("Click boton_registrarse")
+    print("Click registrarse")
 
 def on_enter_registrarte(event):
     boton_registrarse.configure(text_color='white')  # Cambiar de color al pasar el mouse
@@ -53,7 +55,14 @@ boton_registrarse.bind("<Leave>", on_leave_registrarte)
 
 #INICIO BOTON INICIO SESION
 def boton_click():
-    print("Click")
+    usuario = campo_usuario.get()
+    contraseña = campo_contraseña.get()
+    if(verificar_usuario_contrasena(conexion_usuarios, usuario, contraseña) == True):
+        print("Pasó la verificacion")
+    else:
+        messagebox.showerror("Error de Inicio de Sesión", "El nombre de usuario o la contraseña son incorrectos")
+    print(usuario)
+    print(contraseña)
 
 boton_login= ctk.CTkButton(frame_login, width=220 , text="Iniciar Sesion", corner_radius = 6, command= boton_click)
 boton_login.place(x=50, y=240)
