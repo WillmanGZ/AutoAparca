@@ -1,8 +1,9 @@
 from Listas import *
 
 class Vehiculo:
-    def __init__(self, placa, propietario, horaEntrada, horaSalida = None): 
+    def __init__(self, placa, tipoVehiculo, propietario, horaEntrada, horaSalida = None): 
         self._placa = placa
+        self._tipoVehiculo = tipoVehiculo
         self._propietario = propietario
         self._horaEntrada = horaEntrada
         self._horaSalida = horaSalida
@@ -14,6 +15,14 @@ class Vehiculo:
     @placa.setter
     def placa(self, nuevaPlaca): #Setter Placa
         self._placa = nuevaPlaca
+
+    @property
+    def tipoVehiculo(self): #Getter Tipo Vehiculo
+        return self._tipoVehiculo
+    
+    @tipoVehiculo.setter
+    def tipoVehiculo(self, nuevoTipoVehiculo):
+        self._tipoVehiculo = nuevoTipoVehiculo
 
     @property
     def propietario(self): #Getter Propietario
@@ -40,7 +49,7 @@ class Vehiculo:
         self._horaSalida = nuevaHoraSalida
 
     def __str__(self): #ToString
-        return f"{self._placa}, {self._propietario}, {self._horaEntrada}, {self._horaSalida or 'No especificada'})"
+        return f"{self._placa}, {self._placa}, {self._propietario}, {self._horaEntrada}, {self._horaSalida or 'No especificada'})"
 
 vehiculos = ListaEnlazada()
 def agregarVehiculos(vehiculo):
