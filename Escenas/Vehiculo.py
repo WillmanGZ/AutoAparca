@@ -4,7 +4,7 @@ class Vehiculo:
     def __init__(self, placa, tipoVehiculo, propietario, horaEntrada, horaSalida = None): 
         self._placa = placa
         self._tipoVehiculo = tipoVehiculo
-        self._propietario = propietario
+        self._propietario = propietario     
         self._horaEntrada = horaEntrada
         self._horaSalida = horaSalida
     
