@@ -1,5 +1,6 @@
 import re 
 import tkinter as tk
+from tkinter import messagebox
 import customtkinter as ctk
 
 class Parqueadero:
@@ -90,6 +91,20 @@ class Parqueadero:
                                             text= "Sin informacion"
                                             )
         informacion_vehiculo.place(relx = 0.5, rely = 0.1, anchor = ctk.CENTER)
+        
+        #Para seleccionar el tipo de vehiculo
+        opciones = ["Selecciona una opcion", "Carro", "Moto"]
+        self.carro_moto = ctk.CTkComboBox(master=panel2,
+                                     height= 25,
+                                     width= 180,
+                                     corner_radius=15,
+                                     values= opciones,
+                                     dropdown_hover_color= "gray",
+                                     justify="center",
+                                     state="readonly",
+                                     )
+        self.carro_moto.set(opciones[0])
+        self.carro_moto.place(relx = 0.5, rely = 0.160, anchor = ctk.CENTER)
                
         #TextField de placa para la busqueda de un vehiculo
         self.buscar_placa = ctk.CTkEntry(master= panel2,
@@ -99,7 +114,15 @@ class Parqueadero:
                                     placeholder_text= "          Placa del vehiculo",
                                     placeholder_text_color= "gray"                          
                                     )
-        self.buscar_placa.place(relx = 0.5, rely = 0.160, anchor = ctk.CENTER)
+        self.buscar_placa.place(relx = 0.5, rely = 0.220, anchor = ctk.CENTER)
+        
+         #Checkbox para movilidad reducida
+        movilidad_reducida = ctk.CTkCheckBox(master=panel2,
+                                             height=3,
+                                             width=3,
+                                             corner_radius=5,
+                                             text= "Movilidad Reducida")
+        movilidad_reducida.place(relx = 0.5, rely = 0.280, anchor = ctk.CENTER)
         
         #Boton para buscar vehiculo mediante la placa
         buscar_vehiculo = ctk.CTkButton(master= panel2,
@@ -109,7 +132,7 @@ class Parqueadero:
                                         corner_radius= 15,
                                         command=self.buscarVehiculo
                                         )
-        buscar_vehiculo.place(relx = 0.5, rely = 0.220, anchor = ctk.CENTER)
+        buscar_vehiculo.place(relx = 0.5, rely = 0.340, anchor = ctk.CENTER)
         
         #Boton eliminar carro
         eliminar_carro = ctk.CTkButton(master=panel2,
@@ -119,7 +142,7 @@ class Parqueadero:
                                        width= 180,
                                        corner_radius= 15
                                        )
-        eliminar_carro.place(relx = 0.5, rely = 0.280 , anchor = ctk.CENTER)
+        eliminar_carro.place(relx = 0.5, rely = 0.400 , anchor = ctk.CENTER)
         
         self.principal.mainloop()
     
@@ -142,26 +165,37 @@ class Parqueadero:
         print("Boton Piso 3")
         
     def buscarVehiculo(self):
-        placa = self.buscar_placa.get()
-        if placa == "":
-            print("Digite una placa valida con el formato XXX000")
-        print(placa)
+        placa = self.buscar_placa.get().upper()
+        self.verificarPlaca(placa)
+       
         
     def eliminarVehiculo(self):
         print("Eliminar vehiculo")
     
     #Para verificar si la placa es valida
-    def verificarPlaca(self):
-        placa = self.buscar_placa.get()
-        if self.formatoPlacaCorrecto(placa):
-            print("Formato de placa válido")
-            return True
-        else:
-            print("Formato de placa inválido")
-            print
+    def verificarPlaca(self, placa):
+        if placa == "":
+            messagebox.showwarning("Digite su placa", "Porfavor digite su placa")
             return False
+        else:
+            if self.carro_moto.get() == "Carro":
+                if self.formatoPlacaCarro(placa):
+                    messagebox.showinfo("Correcto", "Formato Correcto")
+                    return True
+                else:
+                    messagebox.showerror("Formato Incorrecto", "Porfavor digite una placa con el formato XXX000 (Sin espacios entre los digitos)")
+                    return False
+            elif self.carro_moto.get() == "Moto":
+                if self.formatoPlacaMoto(placa):
+                    messagebox.showinfo("Correcto", "Formato Correcto")
+                    return True
+                else:
+                    messagebox.showerror("Formato incorrecto", "Porfavor digite una placa con el formato XXX000 o XXX 00X (Sin espacios entre los digitos)")
+                    return False
+            else:
+                messagebox.showwarning("Elegir tipo de vehiculo", "Debe elegir el tipo de vehiculo")
 
-    def formatoPlacaCorrecto(self, placa):
+    def formatoPlacaCarro(self, placa):
         # Expresión regular para verificar el formato de placa colombiano
         patron = r'^[A-Z]{3}\d{3}$'
         return re.match(patron, placa) is not None
@@ -173,6 +207,17 @@ class Parqueadero:
         #$ indica el final de la línea.
         #re.match(patron, placa): Comprueba si la cadena placa coincide con el patrón. Retorna un objeto de coincidencia si la placa es válida, y None si no lo es.
         
+    def formatoPlacaMoto(self, placa):
+        # Expresión regular para placas de motocicletas: tres letras, dos dígitos, y un dígito o letra al final
+        patron = r'^[A-Z]{3}\d{2}[A-Z0-9]$'
+        return re.match(patron, placa) is not None
+    
+        #Expresión Regular: ^[A-Z]{3}\d{2}[A-Z0-9]$
+        #^ indica el inicio de la cadena.
+        #[A-Z]{3} asegura que los primeros tres caracteres sean letras mayúsculas.
+        #\d{2} asegura que los siguientes dos caracteres sean dígitos.
+        #[A-Z0-9] el último carácter puede ser un dígito o una letra mayúscula.
+        #$ indica el final de la cadena. 
         
         
 crazy = Parqueadero()
