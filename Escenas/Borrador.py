@@ -16,27 +16,28 @@ class Parqueadero:
         ctk.set_default_color_theme("blue")  # Tema de color (hay varios temas disponibles)
         
         #Instanciar los pisos con sus respectivos espacios
-        pisos = {1: {"carros1": [], "motos1": [], "movilidadreducida1":[]}, 
-                 2: {"carros2": [], "motos2": [], "movilidadreducida2":[]}, 
-                 3: {"carros3": [], "motos3": [], "movilidadreducida3":[]}}
+        self.pisos = {
+                1: {"carros1": [], "motos1": [], "movilidadreducida1":[]}, 
+                2: {"carros2": [], "motos2": [], "movilidadreducida2":[]}, 
+                3: {"carros3": [], "motos3": [], "movilidadreducida3":[]}}
         
         #Generar posiciones vacias en los carros
         for i in range(80):
-            pisos[1]["carros1"].append(None)
-            pisos[2]["carros2"].append(None)
-            pisos[3]["carros3"].append(None)
+            self.pisos[1]["carros1"].append(None)
+            self.pisos[2]["carros2"].append(None)
+            self.pisos[3]["carros3"].append(None)
         
         #Generar posiciones vacias en las motos
         for i in range(120):
-            pisos[1]["motos1"].append(None)
-            pisos[2]["motos2"].append(None)
-            pisos[3]["motos3"].append(None)
+            self.pisos[1]["motos1"].append(None)
+            self.pisos[2]["motos2"].append(None)
+            self.pisos[3]["motos3"].append(None)
         
         #Generar posiciones vacias en movilidad reducida
         for i in range(10):
-            pisos[1]["movilidadreducida1"].append(None)
-            pisos[2]["movilidadreducida2"].append(None)
-            pisos[3]["movilidadreducida3"].append(None)
+            self.pisos[1]["movilidadreducida1"].append(None)
+            self.pisos[2]["movilidadreducida2"].append(None)
+            self.pisos[3]["movilidadreducida3"].append(None)
             
         #Panel que se usará para centrar los botones de disponibilidad de los pisos
         panel1 = ctk.CTkFrame(master=self.principal,
@@ -209,27 +210,23 @@ class Parqueadero:
             print("Hola")
 
     def botonPiso1(self):
-        print("Boton Piso 1")
         self.pisoSeleccionado = 1
     
     def botonPiso2(self):
-        print("Boton Piso 2")
+        self.pisoSeleccionado = 2
     
     def botonPiso3(self):
-        print("Boton Piso 3")
+        self.pisoSeleccionado = 3
     
     def botonCarro(self):
-        print("Carro")
         self.vehiculoSeleccionado = "Carro"
         self.estacionamiento()
         
     def botonMoto(self):
-        print("Moto")
         self.vehiculoSeleccionado = "Moto"
         self.estacionamiento()
         
     def botonMR(self):
-        print("Movilidad Reducida")
         self.vehiculoSeleccionado = "Movilidad Reducida"
         self.estacionamiento()
         
@@ -289,7 +286,39 @@ class Parqueadero:
         #$ indica el final de la cadena. 
     
     def estadoBotones(self, posicion):
-        if(posicion == None):
+        piso = self.pisoSeleccionado
+        vehiculo = self.vehiculoSeleccionado
+        if piso == 1 and vehiculo == "Carro":
+            carros1 = self.pisos[1]["carros1"]
+            estado = carros1[posicion]
+        elif piso == 1 and vehiculo == "Moto":
+            motos1 = self.pisos[1]["motos1"]
+            estado = motos1[posicion]
+        elif piso == 1 and vehiculo == "Movilidad Reducida":
+            mr1 = self.pisos[1]["movilidadreducida1"]
+            estado = mr1[posicion]
+        
+        if piso == 2 and vehiculo == "Carro":
+            carros2 = self.pisos[2]["carros2"]
+            estado = carros2[posicion]
+        elif piso == 2 and vehiculo == "Moto":
+            motos2 = self.pisos[2]["motos2"]
+            estado = motos2[posicion]
+        elif piso == 2 and vehiculo == "Movilidad Reducida":
+            mr2 = self.pisos[2]["movilidadreducida2"]
+            estado = mr2[posicion]
+            
+        if piso == 3 and vehiculo == "Carro":
+            carros3 = self.pisos[3]["carros3"]
+            estado = carros3[posicion]
+        elif piso == 3 and vehiculo == "Moto":
+            motos3 = self.pisos[3]["motos3"]
+            estado = motos3[posicion]
+        elif piso == 3 and vehiculo == "Movilidad Reducida":
+            mr3 = self.pisos[3]["movilidadreducida3"]
+            estado = mr3[posicion]
+        
+        if(estado == None):
             return "Disponible"
         else:
             return "Ocupado"
@@ -323,13 +352,18 @@ class Parqueadero:
                                     height=35,
                                     width=20)
                 boton.grid(row=contador // num_columnas, column=contador % num_columnas, padx=5, pady=5)
+                if self.estadoBotones(i) == "Disponible":
+                    boton.configure(fg_color="green", hover_color="#006400")
+                else:
+                    boton.configure(fg_color="red", hover_color = "#CC0000")
                 contador += 1
                 self.botonesCarro.append(boton)
+            print("Piso 1 - Carro")
 
         # Piso 1 y Motos
         if piso == 1 and vehiculo == "Moto":
-            num_columnas = 10  
-            num_filas = 12     
+            num_columnas = 8  
+            num_filas = 15     
             contador = 0
             # Destruir botones existentes
             for boton in self.botonesCarro:
@@ -348,11 +382,16 @@ class Parqueadero:
             for i in range(120):  
                 boton = ctk.CTkButton(master=self.panel2,
                                     text=self.estadoBotones(i),
-                                    height=10,
-                                    width=1)
+                                    height=27,
+                                    width=10)
                 boton.grid(row=contador // num_columnas, column=contador % num_columnas, padx=2, pady=2)
                 contador += 1
+                if self.estadoBotones(i) == "Disponible":
+                    boton.configure(fg_color="green", hover_color="#006400")
+                else:
+                    boton.configure(fg_color="red", hover_color = "#CC0000")
                 self.botonesMoto.append(boton)
+            print("Piso 1 - Moto")
 
         # Piso 1 y Movilidad Reducida
         if piso == 1 and vehiculo == "Movilidad Reducida":
@@ -380,9 +419,210 @@ class Parqueadero:
                                     width=20)
                 boton.grid(row=contador // num_columnas, column=contador % num_columnas, padx=2, pady=2)
                 contador += 1
+                if self.estadoBotones(i) == "Disponible":
+                    boton.configure(fg_color="green", hover_color="#006400")
+                else:
+                    boton.configure(fg_color="red", hover_color = "#CC0000")
                 self.botonesMR.append(boton)
-
-        
-
+            print("Piso 1 - Movilidad Reducida")
                 
+                
+            # Piso 2 y Carro
+        if piso == 2 and vehiculo == "Carro":
+            num_columnas = 8  
+            num_filas = 10     
+            contador = 0
+            # Destruir botones existentes
+            for boton in self.botonesCarro:
+                boton.destroy()
+            self.botonesCarro.clear()
+
+            for boton in self.botonesMoto:
+                boton.destroy()
+            self.botonesMoto.clear()
+
+            for boton in self.botonesMR:
+                boton.destroy()
+            self.botonesMR.clear()
+
+            # Crear nuevos botones
+            for i in range(80):  
+                boton = ctk.CTkButton(master=self.panel2,
+                                    text=self.estadoBotones(i),
+                                    height=35,
+                                    width=20)
+                boton.grid(row=contador // num_columnas, column=contador % num_columnas, padx=5, pady=5)
+                contador += 1
+                if self.estadoBotones(i) == "Disponible":
+                    boton.configure(fg_color="green", hover_color="#006400")
+                else:
+                    boton.configure(fg_color="red", hover_color = "#CC0000")
+                self.botonesCarro.append(boton)
+            print("Piso 2 - Carro")
+
+        # Piso 2 y Motos
+        if piso == 2 and vehiculo == "Moto":
+            num_columnas = 8  
+            num_filas = 15   
+            contador = 0
+            # Destruir botones existentes
+            for boton in self.botonesCarro:
+                boton.destroy()
+            self.botonesCarro.clear()
+
+            for boton in self.botonesMoto:
+                boton.destroy()
+            self.botonesMoto.clear()
+
+            for boton in self.botonesMR:
+                boton.destroy()
+            self.botonesMR.clear()
+
+            # Crear nuevos botones
+            for i in range(120):  
+                boton = ctk.CTkButton(master=self.panel2,
+                                    text=self.estadoBotones(i),
+                                    height=27,
+                                    width=10)
+                boton.grid(row=contador // num_columnas, column=contador % num_columnas, padx=2, pady=2)
+                contador += 1
+                if self.estadoBotones(i) == "Disponible":
+                    boton.configure(fg_color="green", hover_color="#006400")
+                else:
+                    boton.configure(fg_color="red", hover_color = "#CC0000")
+                self.botonesMoto.append(boton)
+            print("Piso 2 - Moto")
+
+        # Piso 2 y Movilidad Reducida
+        if piso == 2 and vehiculo == "Movilidad Reducida":
+            num_columnas = 5 
+            num_filas = 2     
+            contador = 0
+            # Destruir botones existentes
+            for boton in self.botonesCarro:
+                boton.destroy()
+            self.botonesCarro.clear()
+
+            for boton in self.botonesMoto:
+                boton.destroy()
+            self.botonesMoto.clear()
+
+            for boton in self.botonesMR:
+                boton.destroy()
+            self.botonesMR.clear()
+
+            # Crear nuevos botones
+            for i in range(10):  
+                boton = ctk.CTkButton(master=self.panel2,
+                                     text=self.estadoBotones(i),
+                                    height=30,
+                                    width=20)
+                boton.grid(row=contador // num_columnas, column=contador % num_columnas, padx=2, pady=2)
+                contador += 1
+                if self.estadoBotones(i) == "Disponible":
+                    boton.configure(fg_color="green", hover_color="#006400")
+                else:
+                    boton.configure(fg_color="red", hover_color = "#CC0000")
+                self.botonesMR.append(boton)
+            print("Piso 2 - Movilidad Reducida")
+                
+        # Piso 3 y Carro
+        if piso == 3 and vehiculo == "Carro":
+            num_columnas = 8  
+            num_filas = 10     
+            contador = 0
+            # Destruir botones existentes
+            for boton in self.botonesCarro:
+                boton.destroy()
+            self.botonesCarro.clear()
+
+            for boton in self.botonesMoto:
+                boton.destroy()
+            self.botonesMoto.clear()
+
+            for boton in self.botonesMR:
+                boton.destroy()
+            self.botonesMR.clear()
+
+            # Crear nuevos botones
+            for i in range(80):  
+                boton = ctk.CTkButton(master=self.panel2,
+                                    text=self.estadoBotones(i),
+                                    height=35,
+                                    width=20)
+                boton.grid(row=contador // num_columnas, column=contador % num_columnas, padx=5, pady=5)
+                contador += 1
+                if self.estadoBotones(i) == "Disponible":
+                    boton.configure(fg_color="green", hover_color="#006400")
+                else:
+                    boton.configure(fg_color="red", hover_color = "#CC0000")
+                self.botonesCarro.append(boton)
+            print("Piso 3 - Carro")
+
+        # Piso 3 y Motos
+        if piso == 3 and vehiculo == "Moto":
+            num_columnas = 8  
+            num_filas = 15     
+            contador = 0
+            # Destruir botones existentes
+            for boton in self.botonesCarro:
+                boton.destroy()
+            self.botonesCarro.clear()
+
+            for boton in self.botonesMoto:
+                boton.destroy()
+            self.botonesMoto.clear()
+
+            for boton in self.botonesMR:
+                boton.destroy()
+            self.botonesMR.clear()
+
+            # Crear nuevos botones
+            for i in range(120):  
+                boton = ctk.CTkButton(master=self.panel2,
+                                    text=self.estadoBotones(i),
+                                    height=27,
+                                    width=10)
+                boton.grid(row=contador // num_columnas, column=contador % num_columnas, padx=2, pady=2)
+                contador += 1
+                if self.estadoBotones(i) == "Disponible":
+                    boton.configure(fg_color="green", hover_color="#006400")
+                else:
+                    boton.configure(fg_color="red", hover_color = "#CC0000")
+                self.botonesMoto.append(boton)
+            print("Piso 3 - Moto")
+
+        # Piso 3 y Movilidad Reducida
+        if piso == 3 and vehiculo == "Movilidad Reducida":
+            num_columnas = 5 
+            num_filas = 2     
+            contador = 0
+            # Destruir botones existentes
+            for boton in self.botonesCarro:
+                boton.destroy()
+            self.botonesCarro.clear()
+
+            for boton in self.botonesMoto:
+                boton.destroy()
+            self.botonesMoto.clear()
+
+            for boton in self.botonesMR:
+                boton.destroy()
+            self.botonesMR.clear()
+
+            # Crear nuevos botones
+            for i in range(10):  
+                boton = ctk.CTkButton(master=self.panel2,
+                                     text=self.estadoBotones(i),
+                                    height=30,
+                                    width=20)
+                boton.grid(row=contador // num_columnas, column=contador % num_columnas, padx=2, pady=2)
+                contador += 1
+                if self.estadoBotones(i) == "Disponible":
+                    boton.configure(fg_color="green", hover_color="#006400")
+                else:
+                    boton.configure(fg_color="red", hover_color = "#CC0000")
+                self.botonesMR.append(boton)
+            print("Piso 3 - Movilidad Reducida")
+              
 crazy = Parqueadero()
