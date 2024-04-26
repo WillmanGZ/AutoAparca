@@ -35,20 +35,3 @@ class Parqueadero:
             print(f'Vehículo con placa {nuevo_vehiculo._placa} asignado a {espacio_elegido}')
             return
     print('No hay espacios disponibles')
-
-    def registrar_salida(self, placa):
-        
-        print()
-    def agregar_v(self,tipo):
-        for piso in self.pisos:
-            espacios = self.pisos[piso][categoria]
-            espacios_disponibles = [espacio for espacio, estado in espacios.items() if estado is None]
-        
-        if espacios_disponibles:
-            espacio_elegido = random.choice(espacios_disponibles)  # Selecciona un espacio aleatoriamente
-            espacios[espacio_elegido] = nuevo_vehiculo
-            print(f'Vehículo con placa {nuevo_vehiculo._placa} asignado a {espacio_elegido}')
-
-
-        if tipo == ("autos"):
-         self.pisos[1]["autos"]

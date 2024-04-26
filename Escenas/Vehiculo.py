@@ -1,63 +1,32 @@
-from Listas import *
-
 class Vehiculo:
-    def __init__(self, placa, tipoVehiculo, propietario, horaEntrada, horaSalida = None): 
+    def __init__(self, placa, tipoVehiculo, movilidadReducida): #Los _ de los att representan private
         self._placa = placa
         self._tipoVehiculo = tipoVehiculo
-        self._propietario = propietario     
-        self._horaEntrada = horaEntrada
-        self._horaSalida = horaSalida
-    
+        self._movilidadReducida = movilidadReducida
+
     @property
-    def placa(self): #Getter Placa
+    def placa(self): #Getter placa
         return self._placa
-    
+
     @placa.setter
-    def placa(self, nuevaPlaca): #Setter Placa
+    def placa(self, nuevaPlaca): #Setter placa
         self._placa = nuevaPlaca
 
     @property
-    def tipoVehiculo(self): #Getter Tipo Vehiculo
+    def tipoVehiculo(self): #Getter tipovehiculo
         return self._tipoVehiculo
-    
+
     @tipoVehiculo.setter
-    def tipoVehiculo(self, nuevoTipoVehiculo):
+    def tipoVehiculo(self, nuevoTipoVehiculo): #Setter tipo vehiculo
         self._tipoVehiculo = nuevoTipoVehiculo
 
     @property
-    def propietario(self): #Getter Propietario
-        return self._propietario
+    def movilidadReducida(self): #Getter movilidad reducida
+        return self._movilidadReducida
 
-    @propietario.setter
-    def propietario(self, nuevoPropietario): #Setter Propietario
-        self._propietario = nuevoPropietario
-
-    @property
-    def horaEntrada(self): #Getter horaEntrada
-        return self._horaEntrada
-
-    @horaEntrada.setter #Setter horaEntrada
-    def horaEntrada(self, nuevaHoraEntrada):
-        self._horaEntrada = nuevaHoraEntrada
+    @movilidadReducida.setter
+    def movilidadReducida(self, movilidadReducida): #Setter movilidad reducida
+        self._movilidadReducida = movilidadReducida
     
-    @property
-    def horaSalida(self): #Getter horaSalida
-        return self._horaSalida
-
-    @horaSalida.setter
-    def horaSalida(self, nuevaHoraSalida): #Setter horaSalida
-        self._horaSalida = nuevaHoraSalida
-
-    def __str__(self): #ToString
-        return f"{self._placa}, {self._placa}, {self._propietario}, {self._horaEntrada}, {self._horaSalida or 'No especificada'})"
-
-vehiculos = ListaEnlazada()
-def agregarVehiculos(vehiculo):
-    vehiculos.agregar(vehiculo)
-
-def eliminarVehiculos(vehiculo):
-    if (vehiculos.eliminar(vehiculo)):
-        print ("Vehiculo eliminado con exito")
-    else:
-        print("No se pudo eliminar el vehiculo o no se encontró")
-    
+    def __repr__(self): #Algo asi como el toString
+        return f"Vehículo {self._placa}, Tipo: {self._tipoVehiculo}, Movilidad Reducida: {self._movilidadReducida}"

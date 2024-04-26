@@ -2,16 +2,13 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 from random import choice
 from datetime import datetime
+from Vehiculo import *
 
-class Vehiculo:
-    def _init_(self, placa, movilidad_reducida=False):
-        self.placa = placa
-        self.movilidad_reducida = movilidad_reducida
-
-def asignar_parqueadero():
-    piso = choice([1, 2, 3])
-    fila = choice(['A', 'B', 'C', 'D'])
-    puesto = choice(range(1, 7))
+def asignar_parqueadero(tipo_vehiculo):
+    piso = choice([1, 2, 3]) #Elige aleatoriamente el piso
+    tipo = tipo_vehiculo #Para elegir si es moto o carro
+    fila = choice(['A', 'B', 'C', 'D', "E", "F", "G", "H", "I", "J", "K", "L"]) #Para elegir aleatoriamente la fila
+    puesto = choice(range(1, 13))
     return f'P{piso}{fila}{puesto}'
 
 def registrar_ingreso():
