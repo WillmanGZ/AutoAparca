@@ -49,7 +49,18 @@ class Parqueadero:
             self.pisos[1]["movilidadreducida1"].append(None)
             self.pisos[2]["movilidadreducida2"].append(None)
             self.pisos[3]["movilidadreducida3"].append(None)
-            
+        
+        #Listas para los botones del parqueadero
+        self.infoCarro1 = self.pisos[1]["carros1"]
+        self.infoCarro2 = self.pisos[2]["carros2"]
+        self.infoCarro3 = self.pisos[3]["carros3"]
+        self.infoMoto1 = self.pisos[1]["motos1"]
+        self.infoMoto2 = self.pisos[2]["motos2"]
+        self.infoMoto3 = self.pisos[3]["motos3"]
+        self.infoMR1 = self.pisos[1]["movilidadreducida1"]
+        self.infoMR2 = self.pisos[2]["movilidadreducida2"]
+        self.infoMR3 = self.pisos[3]["movilidadreducida3"]
+        
         #Panel que se usará para centrar los botones de disponibilidad de los pisos
         self.panel1 = ctk.CTkFrame(master=self.principal,
                              height= 580,
@@ -702,10 +713,7 @@ class Parqueadero:
             mr3 = self.pisos[3]["movilidadreducida3"]
             estado = mr3[posicion]
         
-        if(estado == None):
-            return "Disponible"
-        else:
-            return "Ocupado"
+        return estado
     
     def index_to_position(self, index):
         # Asegúrate de que el índice esté en el rango permitido
@@ -757,7 +765,33 @@ class Parqueadero:
         
     def boton_presionado(self, event, id):
         a = self.index_to_position(id)
-        self.informacion_vehiculo.configure(text=a, font= ("Arial", 24))
+        if self.vehiculoSeleccionado == "Carro" and self.pisoSeleccionado == 1:
+            vehiculo = self.infoCarro1[id]
+        if self.vehiculoSeleccionado == "Moto" and self.pisoSeleccionado == 1:
+            vehiculo = self.infoMoto1[id]
+        if self.vehiculoSeleccionado == "Movilidad Reducida" and self.pisoSeleccionado == 1:
+            vehiculo = self.infoMR1[id]
+            
+        if self.vehiculoSeleccionado == "Carro" and self.pisoSeleccionado == 2:
+            vehiculo = self.infoCarro2[id]
+        if self.vehiculoSeleccionado == "Moto" and self.pisoSeleccionado == 2:
+            vehiculo = self.infoMoto2[id]
+        if self.vehiculoSeleccionado == "Movilidad Reducida" and self.pisoSeleccionado == 2:
+            vehiculo = self.infoMR2[id]
+            
+        if self.vehiculoSeleccionado == "Carro" and self.pisoSeleccionado == 3:
+            vehiculo = self.infoCarro3[id]
+        if self.vehiculoSeleccionado == "Moto" and self.pisoSeleccionado == 3:
+            vehiculo = self.infoMoto3[id]
+        if self.vehiculoSeleccionado == "Movilidad Reducida" and self.pisoSeleccionado == 3:
+            vehiculo = self.infoMR3[id]
+            
+        if vehiculo == None:
+            self.informacion_vehiculo.configure(text=a, font= ("Arial", 24))
+        else:
+            self.informacion_vehiculo.configure(text=f"""Posición: {a}
+Placa: {vehiculo.placa}
+Tipo: {vehiculo.tipoVehiculo}""", font= ("Arial", 12))
         
     
     def estacionamiento(self):
@@ -784,20 +818,24 @@ class Parqueadero:
 
             # Crear nuevos botones
             for i in range(80):  
+                if self.estadoBotones(i) == None:
+                    texto = "Disponible"
+                else:
+                    texto = "Ocupado"
                 boton = ctk.CTkButton(master=self.panel2,
-                                    text=self.estadoBotones(i),
+                                    text=texto,
                                     height=35,
                                     width=20)
                 boton.grid(row=contador // num_columnas, column=contador % num_columnas, padx=5, pady=5)
                 boton.id = i  # Asignar un identificador personalizado a cada botón
                 boton.bind("<Button-1>", partial(self.boton_presionado, id=i))
-                if self.estadoBotones(i) == "Disponible":
+                if texto == "Disponible":
                     boton.configure(fg_color="green", hover_color="#006400")
                 else:
                     boton.configure(fg_color="red", hover_color = "#CC0000")
+                    self.infoCarro1.append(self.estadoBotones(i))
                 contador += 1
                 self.botonesCarro.append(boton)
-            print("Piso 1 - Carro")
 
         # Piso 1 y Motos
         if piso == 1 and vehiculo == "Moto":
@@ -819,20 +857,24 @@ class Parqueadero:
 
             # Crear nuevos botones
             for i in range(120):  
+                if self.estadoBotones(i) == None:
+                    texto = "Disponible"
+                else:
+                    texto = "Ocupado"
                 boton = ctk.CTkButton(master=self.panel2,
-                                    text=self.estadoBotones(i),
+                                    text=texto,
                                     height=27,
                                     width=10)
                 boton.grid(row=contador // num_columnas, column=contador % num_columnas, padx=2, pady=2)
                 contador += 1
                 boton.id = i  # Asignar un identificador personalizado a cada botón
                 boton.bind("<Button-1>", partial(self.boton_presionado, id=i))
-                if self.estadoBotones(i) == "Disponible":
+                if texto == "Disponible":
                     boton.configure(fg_color="green", hover_color="#006400")
                 else:
                     boton.configure(fg_color="red", hover_color = "#CC0000")
+                    self.infoMoto1.append(self.estadoBotones(i))
                 self.botonesMoto.append(boton)
-            print("Piso 1 - Moto")
 
         # Piso 1 y Movilidad Reducida
         if piso == 1 and vehiculo == "Movilidad Reducida":
@@ -853,21 +895,25 @@ class Parqueadero:
             self.botonesMR.clear()
 
             # Crear nuevos botones
-            for i in range(10):  
+            for i in range(10): 
+                if self.estadoBotones(i) == None:
+                    texto = "Disponible"
+                else:
+                    texto = "Ocupado"
                 boton = ctk.CTkButton(master=self.panel2,
-                                     text=self.estadoBotones(i),
+                                     text=texto,
                                     height=30,
                                     width=20)
                 boton.grid(row=contador // num_columnas, column=contador % num_columnas, padx=2, pady=2)
                 contador += 1
                 boton.id = i  # Asignar un identificador personalizado a cada botón
                 boton.bind("<Button-1>", partial(self.boton_presionado, id=i))
-                if self.estadoBotones(i) == "Disponible":
+                if texto == "Disponible":
                     boton.configure(fg_color="green", hover_color="#006400")
                 else:
                     boton.configure(fg_color="red", hover_color = "#CC0000")
+                    self.infoMR1.append(self.estadoBotones(i))
                 self.botonesMR.append(boton)
-            print("Piso 1 - Movilidad Reducida")
                 
                 
             # Piso 2 y Carro
@@ -890,20 +936,24 @@ class Parqueadero:
 
             # Crear nuevos botones
             for i in range(80):  
+                if self.estadoBotones(i) == None:
+                    texto = "Disponible"
+                else:
+                    texto = "Ocupado"
                 boton = ctk.CTkButton(master=self.panel2,
-                                    text=self.estadoBotones(i),
+                                    text=texto,
                                     height=35,
                                     width=20)
                 boton.grid(row=contador // num_columnas, column=contador % num_columnas, padx=5, pady=5)
                 contador += 1
                 boton.id = i  # Asignar un identificador personalizado a cada botón
                 boton.bind("<Button-1>", partial(self.boton_presionado, id=i))
-                if self.estadoBotones(i) == "Disponible":
+                if texto == "Disponible":
                     boton.configure(fg_color="green", hover_color="#006400")
                 else:
                     boton.configure(fg_color="red", hover_color = "#CC0000")
+                    self.infoCarro2.append(self.estadoBotones(i))
                 self.botonesCarro.append(boton)
-            print("Piso 2 - Carro")
 
         # Piso 2 y Motos
         if piso == 2 and vehiculo == "Moto":
@@ -925,20 +975,24 @@ class Parqueadero:
 
             # Crear nuevos botones
             for i in range(120):  
+                if self.estadoBotones(i) == None:
+                    texto = "Disponible"
+                else:
+                    texto = "Ocupado"
                 boton = ctk.CTkButton(master=self.panel2,
-                                    text=self.estadoBotones(i),
+                                    text=texto,
                                     height=27,
                                     width=10)
                 boton.grid(row=contador // num_columnas, column=contador % num_columnas, padx=2, pady=2)
                 contador += 1
                 boton.id = i  # Asignar un identificador personalizado a cada botón
                 boton.bind("<Button-1>", partial(self.boton_presionado, id=i))
-                if self.estadoBotones(i) == "Disponible":
+                if texto == "Disponible":
                     boton.configure(fg_color="green", hover_color="#006400")
                 else:
                     boton.configure(fg_color="red", hover_color = "#CC0000")
+                    self.infoMoto2.append(self.estadoBotones(i))
                 self.botonesMoto.append(boton)
-            print("Piso 2 - Moto")
 
         # Piso 2 y Movilidad Reducida
         if piso == 2 and vehiculo == "Movilidad Reducida":
@@ -959,21 +1013,25 @@ class Parqueadero:
             self.botonesMR.clear()
 
             # Crear nuevos botones
-            for i in range(10):  
+            for i in range(10):
+                if self.estadoBotones(i) == None:
+                    texto = "Disponible"
+                else:
+                    texto = "Ocupado"
                 boton = ctk.CTkButton(master=self.panel2,
-                                     text=self.estadoBotones(i),
+                                     text=texto,
                                     height=30,
                                     width=20)
                 boton.grid(row=contador // num_columnas, column=contador % num_columnas, padx=2, pady=2)
                 contador += 1
                 boton.id = i  # Asignar un identificador personalizado a cada botón
                 boton.bind("<Button-1>", partial(self.boton_presionado, id=i))
-                if self.estadoBotones(i) == "Disponible":
+                if texto == "Disponible":
                     boton.configure(fg_color="green", hover_color="#006400")
                 else:
                     boton.configure(fg_color="red", hover_color = "#CC0000")
+                    self.infoMR2.append(self.estadoBotones(i))
                 self.botonesMR.append(boton)
-            print("Piso 2 - Movilidad Reducida")
                 
         # Piso 3 y Carro
         if piso == 3 and vehiculo == "Carro":
@@ -994,21 +1052,25 @@ class Parqueadero:
             self.botonesMR.clear()
 
             # Crear nuevos botones
-            for i in range(80):  
+            for i in range(80):
+                if self.estadoBotones(i) == None:
+                    texto = "Disponible"
+                else:
+                    texto = "Ocupado"
                 boton = ctk.CTkButton(master=self.panel2,
-                                    text=self.estadoBotones(i),
+                                    text=texto,
                                     height=35,
                                     width=20)
                 boton.grid(row=contador // num_columnas, column=contador % num_columnas, padx=5, pady=5)
                 contador += 1
                 boton.id = i  # Asignar un identificador personalizado a cada botón
                 boton.bind("<Button-1>", partial(self.boton_presionado, id=i))
-                if self.estadoBotones(i) == "Disponible":
+                if texto == "Disponible":
                     boton.configure(fg_color="green", hover_color="#006400")
                 else:
                     boton.configure(fg_color="red", hover_color = "#CC0000")
+                    self.infoCarro3.append(self.estadoBotones(i))
                 self.botonesCarro.append(boton)
-            print("Piso 3 - Carro")
 
         # Piso 3 y Motos
         if piso == 3 and vehiculo == "Moto":
@@ -1029,21 +1091,25 @@ class Parqueadero:
             self.botonesMR.clear()
 
             # Crear nuevos botones
-            for i in range(120):  
+            for i in range(120): 
+                if self.estadoBotones(i) == None:
+                    texto = "Disponible"
+                else:
+                    texto = "Ocupado" 
                 boton = ctk.CTkButton(master=self.panel2,
-                                    text=self.estadoBotones(i),
+                                    text=texto,
                                     height=27,
                                     width=10)
                 boton.grid(row=contador // num_columnas, column=contador % num_columnas, padx=2, pady=2)
                 contador += 1
                 boton.id = i  # Asignar un identificador personalizado a cada botón
                 boton.bind("<Button-1>", partial(self.boton_presionado, id=i))
-                if self.estadoBotones(i) == "Disponible":
+                if texto == "Disponible":
                     boton.configure(fg_color="green", hover_color="#006400")
                 else:
                     boton.configure(fg_color="red", hover_color = "#CC0000")
+                    self.infoMoto3.append(self.estadoBotones(i))
                 self.botonesMoto.append(boton)
-            print("Piso 3 - Moto")
 
         # Piso 3 y Movilidad Reducida
         if piso == 3 and vehiculo == "Movilidad Reducida":
@@ -1064,20 +1130,24 @@ class Parqueadero:
             self.botonesMR.clear()
 
             # Crear nuevos botones
-            for i in range(10):  
+            for i in range(10):
+                if self.estadoBotones(i) == None:
+                    texto = "Disponible"
+                else:
+                    texto = "Ocupado"   
                 boton = ctk.CTkButton(master=self.panel2,
-                                     text=self.estadoBotones(i),
+                                     text=texto,
                                     height=30,
                                     width=20)
                 boton.grid(row=contador // num_columnas, column=contador % num_columnas, padx=2, pady=2)
                 contador += 1
                 boton.id = i  # Asignar un identificador personalizado a cada botón
                 boton.bind("<Button-1>", partial(self.boton_presionado, id=i))
-                if self.estadoBotones(i) == "Disponible":
+                if texto == "Disponible":
                     boton.configure(fg_color="green", hover_color="#006400")
                 else:
                     boton.configure(fg_color="red", hover_color = "#CC0000")
+                    self.infoMR3.append(self.estadoBotones(i))
                 self.botonesMR.append(boton)
-            print("Piso 3 - Movilidad Reducida")
               
 crazy = Parqueadero()
