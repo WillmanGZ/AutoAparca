@@ -1,3 +1,4 @@
+from functools import partial
 import os
 import re 
 import tkinter as tk
@@ -47,65 +48,100 @@ class Parqueadero:
                              )
         panel1.place(relx=0.345, rely=0.5, anchor=ctk.CENTER)
         
+         #Label para saber en qué piso te encuentras
+        self.piso_label = ctk.CTkLabel(master= panel1,
+                                    font= ("Arial", 16),
+                                    text= "Piso: Sin seleccionar"
+                                    )
+        self.piso_label.place(relx = 0.150, rely = 0.03, anchor = ctk.CENTER)
+        
+        #Label para saber en qué seccion te encuentras
+        self.seccion_label = ctk.CTkLabel(master= panel1,
+                                    font= ("Arial", 16),
+                                    text= "Sección: Sin seleccionar"
+                                    )
+        self.seccion_label.place(relx = 0.150, rely = 0.1, anchor = ctk.CENTER)
+        
+        #Boton ver seccion
+        ver_seccion = ctk.CTkButton(master=panel1,
+                                       text= "Ver Sección",
+                                       command=self.verSeccion,
+                                       height= 25,
+                                       width= 180,
+                                       corner_radius= 15
+                                       )
+        ver_seccion.place(relx = 0.450, rely = 0.03 , anchor = ctk.CENTER)
+        
+        #Boton cambiar sección
+        ver_seccion = ctk.CTkButton(master=panel1,
+                                       text= "Cambiar sección",
+                                       command=self.cambiarSeccion,
+                                       height= 25,
+                                       width= 180,
+                                       corner_radius= 15
+                                       )
+        ver_seccion.place(relx = 0.450, rely = 0.1 , anchor = ctk.CENTER)
+        self.seccion_estado = False #Para saber si alguna seccion está activa, falso pq al principio el usuario no ve nada
+        
         #Boton que al presionarlo, mostrará la disponibilidad de puestos del piso 1
         boton_piso1 = ctk.CTkButton(master=panel1,
                                     text= "Piso 1",
                                     command= self.botonPiso1,
                                     height= 25,
-                                    width= 170,
-                                    corner_radius= 15
+                                    width= 50,
+                                    corner_radius= 15,
                                     )
-        boton_piso1.place(relx = 0.180, rely = 0.03, anchor = ctk.CENTER)
+        boton_piso1.place(relx = 0.7, rely = 0.03, anchor = ctk.CENTER)
         
         #Boton que al presionarlo, mostrará la disponibilidad de puestos del piso 2
         boton_piso2 = ctk.CTkButton(master=panel1,
                                     text= "Piso 2",
                                     command= self.botonPiso2,
                                     height= 25,
-                                    width= 170,
+                                    width= 50,
                                     corner_radius= 15
                                     )
-        boton_piso2.place(relx = 0.5, rely = 0.03, anchor = ctk.CENTER)
+        boton_piso2.place(relx = 0.8, rely = 0.03, anchor = ctk.CENTER)
         
         #Boton que al presionarlo, mostrará la disponibilidad de puestos del piso 3
         boton_piso3 = ctk.CTkButton(master=panel1,
                                     text= "Piso 3",
                                     command= self.botonPiso3,
                                     height= 25,
-                                    width= 170,
+                                    width= 50,
                                     corner_radius=15
                                     )
-        boton_piso3.place(relx = 0.820, rely = 0.03, anchor = ctk.CENTER)
+        boton_piso3.place(relx = 0.9, rely = 0.03, anchor = ctk.CENTER)
         
         #Boton para seleccionar carro
         boton_carro = ctk.CTkButton(master=panel1,
                                     text= "Carro",
                                     command= self.botonCarro,
                                     height= 25,
-                                    width= 170,
+                                    width= 50,
                                     corner_radius=15
                                     )
-        boton_carro.place(relx = 0.180, rely = 0.1, anchor = ctk.CENTER)
+        boton_carro.place(relx = 0.7, rely = 0.1, anchor = ctk.CENTER)
         
         #Boton para seleccionar moto
         boton_moto = ctk.CTkButton(master=panel1,
                                     text= "Moto",
                                     command= self.botonMoto,
                                     height= 25,
-                                    width= 170,
+                                    width= 50,
                                     corner_radius=15
                                     )
-        boton_moto.place(relx = 0.5, rely = 0.1, anchor = ctk.CENTER)
+        boton_moto.place(relx = 0.8, rely = 0.1, anchor = ctk.CENTER)
         
         #Boton para seleccionar movilidad reducida
         boton_mr = ctk.CTkButton(master=panel1,
-                                    text= "Movilidad Reducida",
+                                    text= "MR",
                                     command= self.botonMR,
                                     height= 25,
-                                    width= 170,
+                                    width= 50,
                                     corner_radius=15
                                     )
-        boton_mr.place(relx = 0.820, rely = 0.1, anchor = ctk.CENTER)
+        boton_mr.place(relx = 0.9, rely = 0.1, anchor = ctk.CENTER)
         
         self.panel2 = ctk.CTkFrame(master= panel1,
                               height=480,
@@ -113,8 +149,7 @@ class Parqueadero:
                               corner_radius=15
                               )
         self.panel2.place(relx = 0.5, rely = 0.570, anchor = ctk.CENTER)
-        #self.panel2.pack_propagate(False)  # Deshabilita el ajuste automático del tamaño del frame a su contenido
-        #self.panel2.grid_propagate(False)
+        
         
         ##############################################################################################################
         #Panel que se usará para centrar el ingreso/informacion de vehiculos
@@ -128,18 +163,20 @@ class Parqueadero:
         
         #Titulo "Informacion de vehiculo"
         informacion_vehiculo_titulo = ctk.CTkLabel(master=panel3,
-                                            text= "Informacion del vehiculo"
+                                            text= "Información del vehículo"
                                             )
         informacion_vehiculo_titulo.place(relx = 0.5, rely = 0.04, anchor = ctk.CENTER)
         
         #Texto que mostrará la informacion del vehiculo
-        informacion_vehiculo = ctk.CTkLabel(master= panel3,
-                                            text= "Sin informacion"
+        self.informacion_vehiculo = ctk.CTkLabel(master= panel3,
+                                            text= "Sin información",
+                                            height=30,
+                                            width=50,
                                             )
-        informacion_vehiculo.place(relx = 0.5, rely = 0.1, anchor = ctk.CENTER)
+        self.informacion_vehiculo.place(relx = 0.5, rely = 0.1, anchor = ctk.CENTER)
         
         #Para seleccionar el tipo de vehiculo
-        opciones = ["Selecciona una opcion", "Carro", "Moto"]
+        opciones = ["Selecciona una opción", "Carro", "Moto"]
         self.carro_moto = ctk.CTkComboBox(master=panel3,
                                      height= 25,
                                      width= 180,
@@ -157,7 +194,7 @@ class Parqueadero:
                                     height= 25,
                                     width= 180,
                                     corner_radius= 15,
-                                    placeholder_text= "          Placa del vehiculo",
+                                    placeholder_text= "          Placa del vehículo",
                                     placeholder_text_color= "gray"                          
                                     )
         self.buscar_placa.place(relx = 0.5, rely = 0.220, anchor = ctk.CENTER)
@@ -174,7 +211,7 @@ class Parqueadero:
         buscar_vehiculo = ctk.CTkButton(master= panel3,
                                         height=25,
                                         width=180,
-                                        text="Buscar vehiculo",
+                                        text="Buscar vehículo",
                                         corner_radius= 15,
                                         command=self.buscarVehiculo
                                         )
@@ -182,7 +219,7 @@ class Parqueadero:
         
         #Boton eliminar carro
         eliminar_carro = ctk.CTkButton(master=panel3,
-                                       text= "Eliminar vehiculo",
+                                       text= "Eliminar vehículo",
                                        command=self.eliminarVehiculo,
                                        height= 25,
                                        width= 180,
@@ -190,6 +227,7 @@ class Parqueadero:
                                        )
         eliminar_carro.place(relx = 0.5, rely = 0.400 , anchor = ctk.CENTER)
         
+       
         
         #Piso seleccionado por el usuario, empieza none pq al principio el usuario no ha seleccionado nada
         self.pisoSeleccionado = None
@@ -206,29 +244,126 @@ class Parqueadero:
         
         self.principal.mainloop()
     
-    def botonParqueadero(self): #Función que se usará para los botones del parqueadero(Solo los de disponibilidad)
+    def verSeccion(self):
+        if self.pisoSeleccionado == None and self.vehiculoSeleccionado == None:
+            messagebox.showwarning("Elija una sección para ver", "Debe elegir un piso y una sección del estacionamiento para ver")
+        elif self.pisoSeleccionado == None:
+            messagebox.showwarning("Elija un piso para ver", "Debe elegir un piso del estacionamiento para ver")
+        elif self.vehiculoSeleccionado == None:
+            messagebox.showwarning("Elija una sección para ver", "Debe una sección del estacionamiento para ver")
+        else:
+            self.estacionamiento()
+            self.botonPiso1.configure(state)
+            self.botonPiso2.configure(state=ctk.DISABLED)
+            self.botonPiso3.configure(state=ctk.DISABLED)
+            self.botonCarro.configure(state=ctk.DISABLED)
+            self.botonMoto.configure(state=ctk.DISABLED)
+            self.botonMR.configure(state=ctk.DISABLED)
+    
+    def cambiarSeccion(self):
+        if self.seccion_estado:
+            # Destruir botones existentes
+            for boton in self.botonesCarro:
+                boton.destroy()
+            self.botonesCarro.clear()
+
+            for boton in self.botonesMoto:
+                boton.destroy()
+            self.botonesMoto.clear()
+
+            for boton in self.botonesMR:
+                boton.destroy()
+            self.botonesMR.clear()
+            #Volver a habilitar los botones
+            self.botonPiso1.configure(state=ctk.ACTIVE)
+            self.botonPiso2.configure(state=ctk.ACTIVE)
+            self.botonPiso3.configure(state=ctk.ACTIVE)
+            self.botonCarro.configure(state=ctk.ACTIVE)
+            self.botonMoto.configure(state=ctk.ACTIVE)
+            self.botonMR.configure(state=ctk.ACTIVE)
+            
+            self.seccion_estado = True
+        else:
+            messagebox.showinfo("Seleccione una sección", "Actualmente no está mirando ninguna sección")
+            
+            
+            
+        
+    def botonesPosiciones(self): #Función que se usará para los botones del parqueadero(Solo los de disponibilidad)
             print("Hola")
 
     def botonPiso1(self):
         self.pisoSeleccionado = 1
+        if self.pisoSeleccionado == None:
+            self.piso_label.configure(text= f"Piso: Sin seleccionar")
+        else:
+            self.piso_label.configure(text= f"Piso: {self.pisoSeleccionado}")
+        if self.vehiculoSeleccionado == None:
+            self.seccion_label.configure(text = f"Sección: Sin seleccionar") 
+        else:  
+            self.seccion_label.configure(text = f"Sección: {self.vehiculoSeleccionado}")
+        
+        
     
     def botonPiso2(self):
         self.pisoSeleccionado = 2
+        if self.pisoSeleccionado == None:
+            self.piso_label.configure(text= f"Piso: Sin seleccionar")
+        else:
+            self.piso_label.configure(text= f"Piso: {self.pisoSeleccionado}")
+        if self.vehiculoSeleccionado == None:
+            self.seccion_label.configure(text = f"Sección: Sin seleccionar") 
+        else:  
+            self.seccion_label.configure(text = f"Sección: {self.vehiculoSeleccionado}")
+        
     
     def botonPiso3(self):
         self.pisoSeleccionado = 3
+        if self.pisoSeleccionado == None:
+            self.piso_label.configure(text= f"Piso: Sin seleccionar")
+        else:
+            self.piso_label.configure(text= f"Piso: {self.pisoSeleccionado}")
+        if self.vehiculoSeleccionado == None:
+            self.seccion_label.configure(text = f"Sección: Sin seleccionar") 
+        else:  
+            self.seccion_label.configure(text = f"Sección: {self.vehiculoSeleccionado}")
+        
     
     def botonCarro(self):
         self.vehiculoSeleccionado = "Carro"
-        self.estacionamiento()
+        if self.pisoSeleccionado == None:
+            self.piso_label.configure(text= f"Piso: Sin seleccionar")
+        else:
+            self.piso_label.configure(text= f"Piso: {self.pisoSeleccionado}")
+        if self.vehiculoSeleccionado == None:
+            self.seccion_label.configure(text = f"Sección: Sin seleccionar") 
+        else:  
+            self.seccion_label.configure(text = f"Sección: {self.vehiculoSeleccionado}")
+        
         
     def botonMoto(self):
         self.vehiculoSeleccionado = "Moto"
-        self.estacionamiento()
+        if self.pisoSeleccionado == None:
+            self.piso_label.configure(text= f"Piso: Sin seleccionar")
+        else:
+            self.piso_label.configure(text= f"Piso: {self.pisoSeleccionado}")
+        if self.vehiculoSeleccionado == None:
+            self.seccion_label.configure(text = f"Sección: Sin seleccionar") 
+        else:  
+            self.seccion_label.configure(text = f"Sección: {self.vehiculoSeleccionado}")
+        
         
     def botonMR(self):
         self.vehiculoSeleccionado = "Movilidad Reducida"
-        self.estacionamiento()
+        if self.pisoSeleccionado == None:
+            self.piso_label.configure(text= f"Piso: Sin seleccionar")
+        else:
+            self.piso_label.configure(text= f"Piso: {self.pisoSeleccionado}")
+        if self.vehiculoSeleccionado == None:
+            self.seccion_label.configure(text = f"Sección: Sin seleccionar") 
+        else:  
+            self.seccion_label.configure(text = f"Sección: {self.vehiculoSeleccionado}")
+        
         
     def buscarVehiculo(self):
         placa = self.buscar_placa.get().upper()
@@ -249,17 +384,17 @@ class Parqueadero:
                     messagebox.showinfo("Correcto", "Formato Correcto")
                     return True
                 else:
-                    messagebox.showerror("Formato Incorrecto", "Porfavor digite una placa con el formato XXX000 (Sin espacios entre los digitos)")
+                    messagebox.showerror("Formato Incorrecto", "Por favor, digite una placa con el formato XXX000 (Sin espacios entre los dígitos)")
                     return False
             elif self.carro_moto.get() == "Moto":
                 if self.formatoPlacaMoto(placa):
                     messagebox.showinfo("Correcto", "Formato Correcto")
                     return True
                 else:
-                    messagebox.showerror("Formato incorrecto", "Porfavor digite una placa con el formato XXX000 o XXX 00X (Sin espacios entre los digitos)")
+                    messagebox.showerror("Formato incorrecto", "Por favor, digite una placa con el formato XXX000 o XXX 00X (Sin espacios entre los dígitos)")
                     return False
             else:
-                messagebox.showwarning("Elegir tipo de vehiculo", "Debe elegir el tipo de vehiculo")
+                messagebox.showwarning("Elegir tipo de vehículo", "Debe elegir el tipo de vehículo")
 
     def formatoPlacaCarro(self, placa):
         # Expresión regular para verificar el formato de placa colombiano
@@ -323,6 +458,59 @@ class Parqueadero:
         else:
             return "Ocupado"
     
+    def index_to_position(self, index):
+        # Asegúrate de que el índice esté en el rango permitido
+        if self.vehiculoSeleccionado == "Carro":
+            if index < 0 or index >= 80:
+                return "Índice fuera de rango"
+
+         # Calcula la fila y la columna
+            piso = self.pisoSeleccionado
+            fila = index // 8
+            columna = (index % 8) + 1
+
+         # Convierte el índice de fila a letra (A=65 en ASCII)
+            letra_fila = chr(fila + 65)
+
+            # Formatea la salida como 'A1', 'B2', etc.
+            return f"P{piso}{letra_fila}{columna}"
+        
+        
+        if self.vehiculoSeleccionado == "Moto":
+            if index < 0 or index >= 120:
+                return "Índice fuera de rango"
+
+         # Calcula la fila y la columna
+            piso = self.pisoSeleccionado
+            fila = index // 15
+            columna = (index % 15) + 1
+
+         # Convierte el índice de fila a letra (A=65 en ASCII)
+            letra_fila = chr(fila + 65)
+
+            # Formatea la salida como 'A1', 'B2', etc.
+            return f"P{piso}{letra_fila}{columna}"
+        
+        if self.vehiculoSeleccionado == "Movilidad Reducida":
+            if index < 0 or index >= 10:
+                return "Índice fuera de rango"
+
+         # Calcula la fila y la columna
+            piso = self.pisoSeleccionado
+            fila = index // 5
+            columna = (index % 5) + 1
+
+         # Convierte el índice de fila a letra (A=65 en ASCII)
+            letra_fila = chr(fila + 65)
+
+            # Formatea la salida como 'A1', 'B2', etc.
+            return f"P{piso}{letra_fila}{columna}"
+        
+    def boton_presionado(self, event, id):
+        a = self.index_to_position(id)
+        self.informacion_vehiculo.configure(text=a, font= ("Arial", 16))
+        
+    
     def estacionamiento(self):
         piso = self.pisoSeleccionado
         vehiculo = self.vehiculoSeleccionado
@@ -352,6 +540,8 @@ class Parqueadero:
                                     height=35,
                                     width=20)
                 boton.grid(row=contador // num_columnas, column=contador % num_columnas, padx=5, pady=5)
+                boton.id = i  # Asignar un identificador personalizado a cada botón
+                boton.bind("<Button-1>", partial(self.boton_presionado, id=i))
                 if self.estadoBotones(i) == "Disponible":
                     boton.configure(fg_color="green", hover_color="#006400")
                 else:
@@ -386,6 +576,8 @@ class Parqueadero:
                                     width=10)
                 boton.grid(row=contador // num_columnas, column=contador % num_columnas, padx=2, pady=2)
                 contador += 1
+                boton.id = i  # Asignar un identificador personalizado a cada botón
+                boton.bind("<Button-1>", partial(self.boton_presionado, id=i))
                 if self.estadoBotones(i) == "Disponible":
                     boton.configure(fg_color="green", hover_color="#006400")
                 else:
@@ -419,6 +611,8 @@ class Parqueadero:
                                     width=20)
                 boton.grid(row=contador // num_columnas, column=contador % num_columnas, padx=2, pady=2)
                 contador += 1
+                boton.id = i  # Asignar un identificador personalizado a cada botón
+                boton.bind("<Button-1>", partial(self.boton_presionado, id=i))
                 if self.estadoBotones(i) == "Disponible":
                     boton.configure(fg_color="green", hover_color="#006400")
                 else:
@@ -453,6 +647,8 @@ class Parqueadero:
                                     width=20)
                 boton.grid(row=contador // num_columnas, column=contador % num_columnas, padx=5, pady=5)
                 contador += 1
+                boton.id = i  # Asignar un identificador personalizado a cada botón
+                boton.bind("<Button-1>", partial(self.boton_presionado, id=i))
                 if self.estadoBotones(i) == "Disponible":
                     boton.configure(fg_color="green", hover_color="#006400")
                 else:
@@ -486,6 +682,8 @@ class Parqueadero:
                                     width=10)
                 boton.grid(row=contador // num_columnas, column=contador % num_columnas, padx=2, pady=2)
                 contador += 1
+                boton.id = i  # Asignar un identificador personalizado a cada botón
+                boton.bind("<Button-1>", partial(self.boton_presionado, id=i))
                 if self.estadoBotones(i) == "Disponible":
                     boton.configure(fg_color="green", hover_color="#006400")
                 else:
@@ -519,6 +717,8 @@ class Parqueadero:
                                     width=20)
                 boton.grid(row=contador // num_columnas, column=contador % num_columnas, padx=2, pady=2)
                 contador += 1
+                boton.id = i  # Asignar un identificador personalizado a cada botón
+                boton.bind("<Button-1>", partial(self.boton_presionado, id=i))
                 if self.estadoBotones(i) == "Disponible":
                     boton.configure(fg_color="green", hover_color="#006400")
                 else:
@@ -552,6 +752,8 @@ class Parqueadero:
                                     width=20)
                 boton.grid(row=contador // num_columnas, column=contador % num_columnas, padx=5, pady=5)
                 contador += 1
+                boton.id = i  # Asignar un identificador personalizado a cada botón
+                boton.bind("<Button-1>", partial(self.boton_presionado, id=i))
                 if self.estadoBotones(i) == "Disponible":
                     boton.configure(fg_color="green", hover_color="#006400")
                 else:
@@ -585,6 +787,8 @@ class Parqueadero:
                                     width=10)
                 boton.grid(row=contador // num_columnas, column=contador % num_columnas, padx=2, pady=2)
                 contador += 1
+                boton.id = i  # Asignar un identificador personalizado a cada botón
+                boton.bind("<Button-1>", partial(self.boton_presionado, id=i))
                 if self.estadoBotones(i) == "Disponible":
                     boton.configure(fg_color="green", hover_color="#006400")
                 else:
@@ -618,6 +822,8 @@ class Parqueadero:
                                     width=20)
                 boton.grid(row=contador // num_columnas, column=contador % num_columnas, padx=2, pady=2)
                 contador += 1
+                boton.id = i  # Asignar un identificador personalizado a cada botón
+                boton.bind("<Button-1>", partial(self.boton_presionado, id=i))
                 if self.estadoBotones(i) == "Disponible":
                     boton.configure(fg_color="green", hover_color="#006400")
                 else:
