@@ -1,10 +1,11 @@
 from functools import partial
 import os
 import re 
-import tkinter as tk
 from tkinter import messagebox
+from PIL import Image, ImageTk
 import customtkinter as ctk
 from datetime import datetime  
+from pathlib import Path
 
 class Parqueadero:
     def __init__(self):
@@ -15,7 +16,7 @@ class Parqueadero:
         center_x = (self.principal.winfo_screenwidth() - window_width) // 2
         center_y = (self.principal.winfo_screenheight() - window_height) // 2
         self.principal.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
-        self.principal.title("Parqueadero")
+        self.principal.title("AutoAparca V1")
         self.principal.resizable(False,False)
         ruta_icono = os.path.join(os.path.dirname(__file__), '..', 'icon.ico')
         self.principal.iconbitmap(ruta_icono)
@@ -47,29 +48,50 @@ class Parqueadero:
             self.pisos[3]["movilidadreducida3"].append(None)
             
         #Panel que se usará para centrar los botones de disponibilidad de los pisos
-        panel1 = ctk.CTkFrame(master=self.principal,
+        self.panel1 = ctk.CTkFrame(master=self.principal,
                              height= 580,
                              width= 670,
                              corner_radius= 15,
                              )
-        panel1.place(relx=0.345, rely=0.5, anchor=ctk.CENTER)
+        self.panel1.place(relx=0.345, rely=0.5, anchor=ctk.CENTER)
+        
+         #Imagen del carrito
+        base_path = Path(__file__).parent
+        image_path = base_path / "imagenes" / "carrito.png"
+        imagen= Image.open(image_path)
+        self.img = ImageTk.PhotoImage(imagen)
+
+        self.img_logo = ctk.CTkLabel(master=self.panel1, image=self.img, text="")
+        self.img_logo.place(relx = 0.5, rely = 0.5, anchor=ctk.CENTER)
+        
+        #Titulo del programas
+        self.titulo_programa = ctk.CTkLabel(master= self.panel1,
+                                       text="AutoAparca V1",
+                                       font=("Courier", 32))
+        self.titulo_programa.place(relx = 0.5, rely= 0.750, anchor=ctk.CENTER)
+        
+        #Mnesaje de bienvenida
+        self.bienvenido_titulo = ctk.CTkLabel(master= self.panel1,
+                                       text="Bienvenido",
+                                       font=("Courier", 14))
+        self.bienvenido_titulo.place(relx = 0.5, rely= 0.815, anchor=ctk.CENTER)
         
          #Label para saber en qué piso te encuentras
-        self.piso_label = ctk.CTkLabel(master= panel1,
+        self.piso_label = ctk.CTkLabel(master= self.panel1,
                                     font= ("Arial", 16),
                                     text= "Piso: Sin seleccionar"
                                     )
         self.piso_label.place(relx = 0.150, rely = 0.05, anchor = ctk.CENTER)
         
         #Label para saber en qué seccion te encuentras
-        self.seccion_label = ctk.CTkLabel(master= panel1,
+        self.seccion_label = ctk.CTkLabel(master= self.panel1,
                                     font= ("Arial", 16),
                                     text= "Sección: Sin seleccionar"
                                     )
         self.seccion_label.place(relx = 0.150, rely = 0.1, anchor = ctk.CENTER)
         
         #Boton ver seccion
-        self.boton_verSeccion = ctk.CTkButton(master=panel1,
+        self.boton_verSeccion = ctk.CTkButton(master=self.panel1,
                                        text= "Ver Sección",
                                        command=self.verSeccion,
                                        height= 25,
@@ -79,7 +101,7 @@ class Parqueadero:
         self.boton_verSeccion.place(relx = 0.450, rely = 0.05 , anchor = ctk.CENTER)
         
         #Boton cambiar sección
-        self.boton_cambiarSeccion = ctk.CTkButton(master=panel1,
+        self.boton_cambiarSeccion = ctk.CTkButton(master=self.panel1,
                                        text= "Cambiar sección",
                                        command=self.cambiarSeccion,
                                        height= 25,
@@ -91,7 +113,7 @@ class Parqueadero:
         self.seccion_estado = False #Para saber si alguna seccion está activa, falso pq al principio el usuario no ve nada
         
         #Boton que al presionarlo, mostrará la disponibilidad de puestos del piso 1
-        self.boton_piso1 = ctk.CTkButton(master=panel1,
+        self.boton_piso1 = ctk.CTkButton(master=self.panel1,
                                     text= "Piso 1",
                                     command= self.botonPiso1,
                                     height= 25,
@@ -101,7 +123,7 @@ class Parqueadero:
         self.boton_piso1.place(relx = 0.7, rely = 0.05, anchor = ctk.CENTER)
         
         #Boton que al presionarlo, mostrará la disponibilidad de puestos del piso 2
-        self.boton_piso2 = ctk.CTkButton(master=panel1,
+        self.boton_piso2 = ctk.CTkButton(master=self.panel1,
                                     text= "Piso 2",
                                     command= self.botonPiso2,
                                     height= 25,
@@ -111,7 +133,7 @@ class Parqueadero:
         self.boton_piso2.place(relx = 0.8, rely = 0.05, anchor = ctk.CENTER)
         
         #Boton que al presionarlo, mostrará la disponibilidad de puestos del piso 3
-        self.boton_piso3 = ctk.CTkButton(master=panel1,
+        self.boton_piso3 = ctk.CTkButton(master=self.panel1,
                                     text= "Piso 3",
                                     command= self.botonPiso3,
                                     height= 25,
@@ -121,7 +143,7 @@ class Parqueadero:
         self.boton_piso3.place(relx = 0.9, rely = 0.05, anchor = ctk.CENTER)
         
         #Boton para seleccionar carro
-        self.boton_carro = ctk.CTkButton(master=panel1,
+        self.boton_carro = ctk.CTkButton(master=self.panel1,
                                     text= "Carro",
                                     command= self.botonCarro,
                                     height= 25,
@@ -131,7 +153,7 @@ class Parqueadero:
         self.boton_carro.place(relx = 0.7, rely = 0.1, anchor = ctk.CENTER)
         
         #Boton para seleccionar moto
-        self.boton_moto = ctk.CTkButton(master=panel1,
+        self.boton_moto = ctk.CTkButton(master=self.panel1,
                                     text= "Moto",
                                     command= self.botonMoto,
                                     height= 25,
@@ -141,7 +163,7 @@ class Parqueadero:
         self.boton_moto.place(relx = 0.8, rely = 0.1, anchor = ctk.CENTER)
         
         #Boton para seleccionar movilidad reducida
-        self.boton_mr = ctk.CTkButton(master=panel1,
+        self.boton_mr = ctk.CTkButton(master=self.panel1,
                                     text= "MR",
                                     command= self.botonMR,
                                     height= 25,
@@ -150,7 +172,7 @@ class Parqueadero:
                                     )
         self.boton_mr.place(relx = 0.9, rely = 0.1, anchor = ctk.CENTER)
         
-        self.panel2 = ctk.CTkFrame(master= panel1,
+        self.panel2 = ctk.CTkFrame(master= self.panel1,
                               height=480,
                               width=650,
                               corner_radius=15
@@ -347,6 +369,9 @@ class Parqueadero:
             self.boton_mr.configure(state=ctk.DISABLED)
             self.boton_verSeccion.configure(state=ctk.DISABLED)
             self.boton_cambiarSeccion.configure(state=ctk.NORMAL)
+            self.img_logo.place_forget()
+            self.titulo_programa.configure(state=ctk.DISABLED)
+            self.bienvenido_titulo.configure(state=ctk.DISABLED)
             self.seccion_estado = True
     
     def cambiarSeccion(self):
@@ -378,6 +403,9 @@ class Parqueadero:
             self.seccion_label.configure(text = f"Sección: Sin seleccionar")
             self.vehiculoSeleccionado = None
             self.informacion_vehiculo.configure(text="Sin información", font= ("Arial", 16))
+            self.img_logo.place(relx = 0.5, rely = 0.5, anchor=ctk.CENTER)
+            self.titulo_programa.configure(state=ctk.NORMAL)
+            self.bienvenido_titulo.configure(state=ctk.NORMAL)
     
             self.seccion_estado = False
         else:
