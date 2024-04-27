@@ -307,14 +307,6 @@ class Parqueadero:
                                     )
         self.buscar_placa.place(relx = 0.5, rely = 0.560, anchor = ctk.CENTER)
         
-         #Checkbox para movilidad reducida
-        movilidad_reducida = ctk.CTkCheckBox(master=self.panel4,
-                                             height=3,
-                                             width=3,
-                                             corner_radius=5,
-                                             text= "Movilidad Reducida")
-        movilidad_reducida.place(relx = 0.5, rely = 0.675, anchor = ctk.CENTER)
-        
         #Boton para buscar vehiculo mediante la placa
         buscar_vehiculo = ctk.CTkButton(master= self.panel4,
                                         height=25,
@@ -349,6 +341,10 @@ class Parqueadero:
         self.botonesMoto = []
         #Lista de los botones movilidad reducida
         self.botonesMR = []
+        
+        #Para seleccionar vehiculos y eliminarlos despues
+        self.resultadoBusqueda = None
+        
         self.update_time()
         self.principal.mainloop()
     
@@ -494,7 +490,8 @@ class Parqueadero:
         
     def buscarVehiculo(self):
         placa = self.buscar_placa.get().upper()
-        self.verificarPlaca(placa)
+        if self.verificarPlaca(placa):
+            self.buscar_vehiculo(placa)
     
     def agregarVehiculo(self):###############################################################
         placa = self.agregar_placa.get().upper()
@@ -509,6 +506,8 @@ class Parqueadero:
                     if tipo_vehiculo == "Carro" and movilidad_reducida == 0:
                         piso = random.randint(1, 3)
                         posicion = random.randint(0,79)
+                        posicionParqueadero = self.index_to_position2(posicion, piso, tipo_vehiculo, movilidad_reducida)
+                        nuevoVehiculo.posicion = posicionParqueadero
                         if self.pisos[piso][f"carros{piso}"][posicion] == None:
                             self.pisos[piso][f"carros{piso}"][posicion] = nuevoVehiculo
                             self.pisoSeleccionado = piso
@@ -534,7 +533,7 @@ class Parqueadero:
                             espacio_encontrado = True
             
                 if espacio_encontrado:
-                    messagebox.showinfo("Vehiculo estacionado", "El vehículo fué estacionado correctamente")
+                    messagebox.showinfo("Vehiculo estacionado", f"El vehículo fué estacionado correctamente en el piso {piso}, posición {nuevoVehiculo.posicion}")
                     if movilidad_reducida == 1:
                         self.vehiculoSeleccionado = "Movilidad Reducida"
                     self.verSeccion()
@@ -546,7 +545,70 @@ class Parqueadero:
        
         
     def eliminarVehiculo(self):
-        print("Eliminar vehiculo")
+        if self.resultadoBusqueda == None:
+            messagebox.showerror("No ha seleccionado ningun vehículo", "Seleccione un vehículo para eliminar")
+        else:
+            vehiculoSeleccionado = self.resultadoBusqueda
+            placa = vehiculoSeleccionado.placa
+            
+            c = 0
+            for vehiculo in self.pisos[1]["carros1"]:
+                if vehiculo is not None and vehiculo.placa == placa:
+                    self.pisos[1]["carros1"][c] = None
+                    messagebox.showinfo("Vehículo eliminado", "El vehículo fué eliminado exitosamente")
+                c +=1
+            c= 0
+            for vehiculo in self.pisos[2]["carros2"]:
+                if vehiculo is not None and vehiculo.placa == placa:
+                    self.pisos[2]["carros2"][c]= None
+                    messagebox.showinfo("Vehículo eliminado", "El vehículo fué eliminado exitosamente")
+                c +=1
+            c= 0
+            for vehiculo in self.pisos[3]["carros3"]:
+                if vehiculo is not None and vehiculo.placa == placa:
+                    self.pisos[3]["carros3"][c]= None
+                    messagebox.showinfo("Vehículo eliminado", "El vehículo fué eliminado exitosamente")
+                c +=1
+            c= 0
+            for vehiculo in self.pisos[1]["motos1"]:
+                if vehiculo is not None and vehiculo.placa == placa:
+                    self.pisos[1]["motos1"][c]= None
+                    messagebox.showinfo("Vehículo eliminado", "El vehículo fué eliminado exitosamente")
+                c +=1
+            c= 0
+            for vehiculo in self.pisos[2]["motos2"]:
+                if vehiculo is not None and vehiculo.placa == placa:
+                    self.pisos[2]["motos2"][c]= None
+                    messagebox.showinfo("Vehículo eliminado", "El vehículo fué eliminado exitosamente")
+                c +=1
+            c= 0
+            for vehiculo in self.pisos[3]["motos3"]:
+                if vehiculo is not None and vehiculo.placa == placa:
+                    self.pisos[3]["motos3"][c]= None
+                    messagebox.showinfo("Vehículo eliminado", "El vehículo fué eliminado exitosamente")
+                c +=1
+            c= 0
+            for vehiculo in self.pisos[1]["movilidadreducida1"]:
+                if vehiculo is not None and vehiculo.placa == placa:
+                    self.pisos[1]["movilidadreducida1"][c]= None
+                    messagebox.showinfo("Vehículo eliminado", "El vehículo fué eliminado exitosamente")
+                c +=1
+            c= 0
+            for vehiculo in self.pisos[2]["movilidadreducida2"]:
+                if vehiculo is not None and vehiculo.placa == placa:
+                    self.pisos[2]["movilidadreducida2"][c]= None
+                    messagebox.showinfo("Vehículo eliminado", "El vehículo fué eliminado exitosamente")
+                c +=1
+            c= 0
+            for vehiculo in self.pisos[3]["movilidadreducida3"]:
+                if vehiculo is not None and vehiculo.placa == placa:
+                    self.pisos[3]["movilidadreducida3"][c]= None
+                    messagebox.showinfo("Vehículo eliminado", "El vehículo fué eliminado exitosamente")
+                c +=1
+            self.estacionamiento()
+            self.resultadoBusqueda = None
+            self.informacion_vehiculo.configure(text="Información del vehículo", font= ("Arial", 20))
+            
     
     
     def buscar_placa_method(self, placa):
@@ -607,6 +669,68 @@ class Parqueadero:
         
         return None
     
+    def buscar_vehiculoPaEliminar(self, placa):
+        carros1 = self.pisos[1]["carros1"]
+        carros2 =self.pisos[2]["carros2"]
+        carros3 = self.pisos[3]["carros3"]
+        motos1 = self.pisos[1]["motos1"]
+        motos2 = self.pisos[2]["motos2"]
+        motos3 = self.pisos[3]["motos3"]
+        mr1= self.pisos[1]["movilidadreducida1"]
+        mr2= self.pisos[2]["movilidadreducida2"]
+        mr3 = self.pisos[3]["movilidadreducida3"]
+        
+        for vehiculo in carros1:
+            if vehiculo is not None and vehiculo.placa == placa:
+                return vehiculo
+        
+        for vehiculo in carros2:
+            if vehiculo is not None and vehiculo.placa == placa:
+                return vehiculo
+            
+        for vehiculo in carros3:
+            if vehiculo is not None and vehiculo.placa == placa:
+                return vehiculo
+            
+        for vehiculo in motos1:
+            if vehiculo is not None and vehiculo.placa == placa:
+                return vehiculo
+            
+        for vehiculo in motos2:
+            if vehiculo is not None and vehiculo.placa == placa:
+                return vehiculo
+            
+        for vehiculo in motos3:
+            if vehiculo is not None and vehiculo.placa == placa:
+                return vehiculo
+            
+        for vehiculo in mr1:
+            if vehiculo is not None and vehiculo.placa == placa:
+                return vehiculo
+            
+        for vehiculo in mr2:
+            if vehiculo is not None and vehiculo.placa == placa:
+                return vehiculo
+            
+        for vehiculo in mr3:
+            if vehiculo is not None and vehiculo.placa == placa:
+                return vehiculo
+        
+        return None
+    
+    
+    #Metodo del boton buscar vehiculo
+    def buscar_vehiculo(self, placa):
+        vehiculo = self.buscar_vehiculoPaEliminar(placa)
+        if vehiculo == None:
+            messagebox.showerror("Vehículo no registrado", "La placa digitada no se encuentra registrada")
+        else:
+            self.informacion_vehiculo.configure(text=f"""Posición: {vehiculo.posicion}
+Placa: {vehiculo.placa}
+Tipo: {vehiculo.tipoVehiculo}""", font= ("Arial", 18))
+            messagebox.showinfo("Vehículo encontrado", "El vehículo ha sido encontrado con éxito, puede ver su información en pantalla")
+            self.resultadoBusqueda = vehiculo
+            
     #Para verificar si la placa es valida
     def verificarPlacaAgregar(self, placa):
         if placa == "":
@@ -627,6 +751,7 @@ class Parqueadero:
                     return False
             else:
                 messagebox.showwarning("Elegir tipo de vehículo", "Debe elegir el tipo de vehículo")
+                return False
     
     #Para verificar si la placa es valida
     def verificarPlaca(self, placa):
@@ -636,7 +761,6 @@ class Parqueadero:
         else:
             if self.carro_moto.get() == "Carro":
                 if self.formatoPlacaCarro(placa):
-                    messagebox.showinfo("Correcto", "Formato Correcto")
                     return True
                 else:
                     messagebox.showerror("Formato Incorrecto", "Por favor, digite una placa con el formato XXX000 (Sin espacios entre los dígitos)")
@@ -649,6 +773,7 @@ class Parqueadero:
                     return False
             else:
                 messagebox.showwarning("Elegir tipo de vehículo", "Debe elegir el tipo de vehículo")
+                return False
 
     def formatoPlacaCarro(self, placa):
         # Expresión regular para verificar el formato de placa colombiano
@@ -757,6 +882,51 @@ class Parqueadero:
             # Formatea la salida como 'A1', 'B2', etc.
             return f"P{piso}{letra_fila}{columna}"
         
+    def index_to_position2(self, index, piso, tipo,  movilidad):
+        # Asegúrate de que el índice esté en el rango permitido
+        if tipo == "Carro" and movilidad == 0:
+            if index < 0 or index >= 80:
+                return "Índice fuera de rango"
+
+         # Calcula la fila y la columna
+            fila = index // 8
+            columna = (index % 8) + 1
+
+         # Convierte el índice de fila a letra (A=65 en ASCII)
+            letra_fila = chr(fila + 65)
+
+            # Formatea la salida como 'A1', 'B2', etc.
+            return f"P{piso}{letra_fila}{columna}"
+        
+        
+        if tipo == "Moto" and movilidad == 0:
+            if index < 0 or index >= 120:
+                return "Índice fuera de rango"
+
+         # Calcula la fila y la columna
+            fila = index // 8
+            columna = (index % 8) + 1
+
+         # Convierte el índice de fila a letra (A=65 en ASCII)
+            letra_fila = chr(fila + 65)
+
+            # Formatea la salida como 'A1', 'B2', etc.
+            return f"P{piso}{letra_fila}{columna}"
+        
+        if movilidad == 1:
+            if index < 0 or index >= 10:
+                return "Índice fuera de rango"
+
+         # Calcula la fila y la columna
+            fila = index // 5
+            columna = (index % 5) + 1
+
+         # Convierte el índice de fila a letra (A=65 en ASCII)
+            letra_fila = chr(fila + 65)
+
+            # Formatea la salida como 'A1', 'B2', etc.
+            return f"P{piso}{letra_fila}{columna}"  
+        
     def boton_presionado(self, event, id):
         a = self.index_to_position(id)
         if self.vehiculoSeleccionado == "Carro" and self.pisoSeleccionado == 1:
@@ -786,6 +956,7 @@ class Parqueadero:
             self.informacion_vehiculo.configure(text=f"""Posición: {a}
 Placa: {vehiculo.placa}
 Tipo: {vehiculo.tipoVehiculo}""", font= ("Arial", 18))
+            self.resultadoBusqueda = vehiculo
         
     
     def estacionamiento(self):
