@@ -1,6 +1,19 @@
 import customtkinter as ctk
 import tkinter as tk
+from pathlib import Path
 from tkinter import messagebox
+
+base_path = Path(__file__).parent
+database_path = base_path / "database" / "database.txt"
+db = open(database_path, "r")
+d = []
+f = []
+for i in db:
+    a,b = i.split(", ")
+    b = b.strip()
+    d.append(a)
+    f.append(b)
+    data = dict(zip(d, f))
 
 # Configura el estilo de customtkinter
 ctk.set_appearance_mode("System")  # Puede ser "System", "Dark", o "Light"
@@ -8,7 +21,7 @@ ctk.set_default_color_theme("blue")  # Tema de color (hay varios temas disponibl
 
 #Creacion de la ventana Login
 login = ctk.CTk()
-login.title ("Inicio de Sesion")
+login.title ("Inicio de Sesión")
 login.resizable(False,False)
 window_width = 600
 window_height = 440
@@ -23,7 +36,7 @@ frame_login = ctk.CTkFrame(master=login,width=320, height=360, corner_radius=15)
 frame_login.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
 #Titulo "Inicia Sesion"
-titulo = ctk.CTkLabel(frame_login, text="Inicia Sesion", font=("Century Gothic", 20))
+titulo = ctk.CTkLabel(frame_login, text="Inicia Sesión", font=("Century Gothic", 20))
 titulo.place(x=90, y=45)
 
 #INICIO CAMPO USUARIO
@@ -31,37 +44,38 @@ campo_usuario = ctk.CTkEntry(frame_login, width=220, placeholder_text="Digita tu
 campo_usuario.place(x=50, y=110)
 
 #INICIO CAMPO CONTRASEÑA
-campo_contraseña = ctk.CTkEntry(frame_login, width=220, placeholder_text="Digita tu contraseña")
-campo_contraseña.place(x=50, y=165)
+campo_contrasena = ctk.CTkEntry(frame_login, width=220, placeholder_text="Digita tu contraseña")
+campo_contrasena.place(x=50, y=165)
+campo_contrasena.configure(show="*")  #Para ocultar la contraseña
 
-#INICIO BOTON REGISTRARTE
-boton_registrarse = ctk.CTkLabel(frame_login, text="Registrarse", font=("Century Gothic", 12), text_color="gray")
-boton_registrarse.place(x=200, y=195)
-
-def boton_registrarse_click(event):
-    print("Click registrarse")
-
-def on_enter_registrarte(event):
-    boton_registrarse.configure(text_color='white')  # Cambiar de color al pasar el mouse
-
-def on_leave_registrarte(event):
-    boton_registrarse.configure(text_color='gray')  # Volver al color original al salir el mouse
-
-boton_registrarse.bind("<Button-1>", boton_registrarse_click)
-boton_registrarse.bind("<Enter>", on_enter_registrarte)
-boton_registrarse.bind("<Leave>", on_leave_registrarte)
-#FIN BOTON REGISTRARSE
-
-#INICIO BOTON INICIO SESION
+#BOTON INICIO SESION
 def boton_click():
     usuario = campo_usuario.get()
-    contraseña = campo_contraseña.get()
+    usuario = usuario.lower()
+    contrasena = campo_contrasena.get()
+    
+     # Abrir el archivo de base de datos en modo lectura
+    with open(database_path, "r") as db:
+        # Leer cada línea del archivo
+        for linea in db:
+            # Dividir la línea en nombre de usuario y contraseña
+            datos = linea.strip().split(", ")
+            if len(datos) == 2:
+                usuario_archivo, contrasena_archivo = datos
+                usuario_archivo = usuario_archivo.lower()
+
+            # Verificar si las credenciales ingresadas coinciden con las almacenadas en la base de datos.
+            if usuario == usuario_archivo and contrasena == contrasena_archivo:
+                messagebox.showinfo("Inicio de Sesión", f"Bienvenido, {usuario}!")
+                return
+
+        # Si no se encuentra ninguna coincidencia, se mostrará un mensaje de error.
+        messagebox.showerror("Error", "Credenciales incorrectas. Por favor, inténtelo de nuevo.")
+
 
 boton_login= ctk.CTkButton(frame_login, width=220 , text="Iniciar Sesion", corner_radius = 6, command= boton_click)
 boton_login.place(x=50, y=240)
+
 #FIN BOTON INICIO SESION
 
-
 login.mainloop()
-
-
