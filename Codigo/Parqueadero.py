@@ -1,4 +1,4 @@
-from Vehiculo import Vehiculo
+from Escenas.VehiculoClass import Vehiculo
 import random
 
 class Parqueadero:
