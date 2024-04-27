@@ -2,6 +2,7 @@ from functools import partial
 import os
 import random
 import re 
+import time
 from tkinter import messagebox
 from PIL import Image, ImageTk
 import customtkinter as ctk
@@ -492,50 +493,51 @@ class Parqueadero:
     
     def agregarVehiculo(self):###############################################################
         placa = self.agregar_placa.get().upper()
-        if self.verificarPlacaAgregar(placa) and self.buscar_placa_method(placa) == None:
-            tipo_vehiculo = self.agregar_carro_moto.get()
-            movilidad_reducida = self.agregar_movilidad_reducida.get()
-            nuevoVehiculo = Vehiculo(placa, tipo_vehiculo, movilidad_reducida)
+        if self.verificarPlacaAgregar(placa):
+            if self.buscar_placa_method(placa) == None:
+                tipo_vehiculo = self.agregar_carro_moto.get()
+                movilidad_reducida = self.agregar_movilidad_reducida.get()
+                nuevoVehiculo = Vehiculo(placa, tipo_vehiculo, movilidad_reducida)
             
-            espacio_encontrado = False
-            while not espacio_encontrado:
-                if tipo_vehiculo == "Carro" and movilidad_reducida == 0:
-                    piso = random.randint(1, 3)
-                    posicion = random.randint(0,79)
-                    if self.pisos[piso][f"carros{piso}"][posicion] == None:
-                        self.pisos[piso][f"carros{piso}"][posicion] = nuevoVehiculo
-                        self.pisoSeleccionado = piso
-                        self.vehiculoSeleccionado = tipo_vehiculo
-                        espacio_encontrado = True
+                espacio_encontrado = False
+                while not espacio_encontrado:
+                    if tipo_vehiculo == "Carro" and movilidad_reducida == 0:
+                        piso = random.randint(1, 3)
+                        posicion = random.randint(0,79)
+                        if self.pisos[piso][f"carros{piso}"][posicion] == None:
+                            self.pisos[piso][f"carros{piso}"][posicion] = nuevoVehiculo
+                            self.pisoSeleccionado = piso
+                            self.vehiculoSeleccionado = tipo_vehiculo
+                            espacio_encontrado = True
                 
-                elif tipo_vehiculo == "Moto:" and movilidad_reducida == 0:
-                    piso = random.randint(1, 3)
-                    posicion = random.randint(0,119)
-                    if self.pisos[piso][f"motos{piso}"][posicion] == None:
-                        self.pisos[piso][f"motos{piso}"][posicion] = nuevoVehiculo
-                        self.pisoSeleccionado = piso
-                        self.vehiculoSeleccionado = tipo_vehiculo
-                        espacio_encontrado = True
+                    elif tipo_vehiculo == "Moto" and movilidad_reducida == 0:
+                        piso = random.randint(1, 3)
+                        posicion = random.randint(0,119)
+                        if self.pisos[piso][f"motos{piso}"][posicion] == None:
+                            self.pisos[piso][f"motos{piso}"][posicion] = nuevoVehiculo
+                            self.pisoSeleccionado = piso
+                            self.vehiculoSeleccionado = tipo_vehiculo
+                            espacio_encontrado = True
                 
-                elif movilidad_reducida == 1:
-                    piso = random.randint(1, 3)
-                    posicion = random.randint(0,9)
-                    if self.pisos[piso][f"movilidadreducida{piso}"][posicion] == None:
-                        self.pisos[piso][f"movilidadreducida{piso}"][posicion] = nuevoVehiculo
-                        self.pisoSeleccionado = piso
-                        self.vehiculoSeleccionado = tipo_vehiculo
-                        espacio_encontrado = True
+                    elif movilidad_reducida == 1:
+                        piso = random.randint(1, 3)
+                        posicion = random.randint(0,9)
+                        if self.pisos[piso][f"movilidadreducida{piso}"][posicion] == None:
+                            self.pisos[piso][f"movilidadreducida{piso}"][posicion] = nuevoVehiculo
+                            self.pisoSeleccionado = piso
+                            self.vehiculoSeleccionado = tipo_vehiculo
+                            espacio_encontrado = True
             
-            if espacio_encontrado:
-                messagebox.showinfo("Vehiculo estacionado", "El vehículo fué estacionado correctamente")
-                if movilidad_reducida == 1:
-                    self.vehiculoSeleccionado = "Movilidad Reducida"
-                self.verSeccion()
-                self.piso_label.configure(text= f"Piso: {self.pisoSeleccionado}")
-                self.seccion_label.configure(text = f"Sección: {self.vehiculoSeleccionado}")
-            else:
-                messagebox.showerror("Sin espacio", "No se encontró espacios disponibles en el estacionamiento")
-            print(nuevoVehiculo.__repr__())
+                if espacio_encontrado:
+                    messagebox.showinfo("Vehiculo estacionado", "El vehículo fué estacionado correctamente")
+                    if movilidad_reducida == 1:
+                        self.vehiculoSeleccionado = "Movilidad Reducida"
+                    self.verSeccion()
+                    self.piso_label.configure(text= f"Piso: {self.pisoSeleccionado}")
+                    self.seccion_label.configure(text = f"Sección: {self.vehiculoSeleccionado}")
+                else:
+                    messagebox.showerror("Sin espacio", "No se encontró espacios disponibles en el estacionamiento")
+                print(nuevoVehiculo.__repr__())
        
         
     def eliminarVehiculo(self):
