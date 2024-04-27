@@ -8,7 +8,12 @@ import customtkinter as ctk
 class Parqueadero:
     def __init__(self):
         self.principal = ctk.CTk()
-        self.principal.geometry("1000x600")
+        window_width = 1000
+        window_height = 600
+        # Calcular la posición x y y para centrar la ventana, y aplicarla
+        center_x = (self.principal.winfo_screenwidth() - window_width) // 2
+        center_y = (self.principal.winfo_screenheight() - window_height) // 2
+        self.principal.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
         self.principal.title("Parqueadero")
         self.principal.resizable(False,False)
         ruta_icono = os.path.join(os.path.dirname(__file__), '..', 'icon.ico')
@@ -53,7 +58,7 @@ class Parqueadero:
                                     font= ("Arial", 16),
                                     text= "Piso: Sin seleccionar"
                                     )
-        self.piso_label.place(relx = 0.150, rely = 0.03, anchor = ctk.CENTER)
+        self.piso_label.place(relx = 0.150, rely = 0.05, anchor = ctk.CENTER)
         
         #Label para saber en qué seccion te encuentras
         self.seccion_label = ctk.CTkLabel(master= panel1,
@@ -63,85 +68,86 @@ class Parqueadero:
         self.seccion_label.place(relx = 0.150, rely = 0.1, anchor = ctk.CENTER)
         
         #Boton ver seccion
-        ver_seccion = ctk.CTkButton(master=panel1,
+        self.boton_verSeccion = ctk.CTkButton(master=panel1,
                                        text= "Ver Sección",
                                        command=self.verSeccion,
                                        height= 25,
                                        width= 180,
                                        corner_radius= 15
                                        )
-        ver_seccion.place(relx = 0.450, rely = 0.03 , anchor = ctk.CENTER)
+        self.boton_verSeccion.place(relx = 0.450, rely = 0.05 , anchor = ctk.CENTER)
         
         #Boton cambiar sección
-        ver_seccion = ctk.CTkButton(master=panel1,
+        self.boton_cambiarSeccion = ctk.CTkButton(master=panel1,
                                        text= "Cambiar sección",
                                        command=self.cambiarSeccion,
                                        height= 25,
                                        width= 180,
                                        corner_radius= 15
                                        )
-        ver_seccion.place(relx = 0.450, rely = 0.1 , anchor = ctk.CENTER)
+        self.boton_cambiarSeccion.place(relx = 0.450, rely = 0.1 , anchor = ctk.CENTER)
+        self.boton_cambiarSeccion.configure(state=ctk.DISABLED) #inactivo al principio pq no estás viendo nada al iniciar el programa
         self.seccion_estado = False #Para saber si alguna seccion está activa, falso pq al principio el usuario no ve nada
         
         #Boton que al presionarlo, mostrará la disponibilidad de puestos del piso 1
-        boton_piso1 = ctk.CTkButton(master=panel1,
+        self.boton_piso1 = ctk.CTkButton(master=panel1,
                                     text= "Piso 1",
                                     command= self.botonPiso1,
                                     height= 25,
                                     width= 50,
                                     corner_radius= 15,
                                     )
-        boton_piso1.place(relx = 0.7, rely = 0.03, anchor = ctk.CENTER)
+        self.boton_piso1.place(relx = 0.7, rely = 0.05, anchor = ctk.CENTER)
         
         #Boton que al presionarlo, mostrará la disponibilidad de puestos del piso 2
-        boton_piso2 = ctk.CTkButton(master=panel1,
+        self.boton_piso2 = ctk.CTkButton(master=panel1,
                                     text= "Piso 2",
                                     command= self.botonPiso2,
                                     height= 25,
                                     width= 50,
                                     corner_radius= 15
                                     )
-        boton_piso2.place(relx = 0.8, rely = 0.03, anchor = ctk.CENTER)
+        self.boton_piso2.place(relx = 0.8, rely = 0.05, anchor = ctk.CENTER)
         
         #Boton que al presionarlo, mostrará la disponibilidad de puestos del piso 3
-        boton_piso3 = ctk.CTkButton(master=panel1,
+        self.boton_piso3 = ctk.CTkButton(master=panel1,
                                     text= "Piso 3",
                                     command= self.botonPiso3,
                                     height= 25,
                                     width= 50,
                                     corner_radius=15
                                     )
-        boton_piso3.place(relx = 0.9, rely = 0.03, anchor = ctk.CENTER)
+        self.boton_piso3.place(relx = 0.9, rely = 0.05, anchor = ctk.CENTER)
         
         #Boton para seleccionar carro
-        boton_carro = ctk.CTkButton(master=panel1,
+        self.boton_carro = ctk.CTkButton(master=panel1,
                                     text= "Carro",
                                     command= self.botonCarro,
                                     height= 25,
                                     width= 50,
                                     corner_radius=15
                                     )
-        boton_carro.place(relx = 0.7, rely = 0.1, anchor = ctk.CENTER)
+        self.boton_carro.place(relx = 0.7, rely = 0.1, anchor = ctk.CENTER)
         
         #Boton para seleccionar moto
-        boton_moto = ctk.CTkButton(master=panel1,
+        self.boton_moto = ctk.CTkButton(master=panel1,
                                     text= "Moto",
                                     command= self.botonMoto,
                                     height= 25,
                                     width= 50,
                                     corner_radius=15
                                     )
-        boton_moto.place(relx = 0.8, rely = 0.1, anchor = ctk.CENTER)
+        self.boton_moto.place(relx = 0.8, rely = 0.1, anchor = ctk.CENTER)
         
         #Boton para seleccionar movilidad reducida
-        boton_mr = ctk.CTkButton(master=panel1,
+        self.boton_mr = ctk.CTkButton(master=panel1,
                                     text= "MR",
                                     command= self.botonMR,
                                     height= 25,
                                     width= 50,
                                     corner_radius=15
                                     )
-        boton_mr.place(relx = 0.9, rely = 0.1, anchor = ctk.CENTER)
+        self.boton_mr.place(relx = 0.9, rely = 0.1, anchor = ctk.CENTER)
         
         self.panel2 = ctk.CTkFrame(master= panel1,
                               height=480,
@@ -149,6 +155,7 @@ class Parqueadero:
                               corner_radius=15
                               )
         self.panel2.place(relx = 0.5, rely = 0.570, anchor = ctk.CENTER)
+        self.panel2.configure(height= 0, width=0)
         
         
         ##############################################################################################################
@@ -252,16 +259,20 @@ class Parqueadero:
         elif self.vehiculoSeleccionado == None:
             messagebox.showwarning("Elija una sección para ver", "Debe una sección del estacionamiento para ver")
         else:
+            self.panel2.configure(height= 480, width=650)
             self.estacionamiento()
-            self.botonPiso1.configure(state)
-            self.botonPiso2.configure(state=ctk.DISABLED)
-            self.botonPiso3.configure(state=ctk.DISABLED)
-            self.botonCarro.configure(state=ctk.DISABLED)
-            self.botonMoto.configure(state=ctk.DISABLED)
-            self.botonMR.configure(state=ctk.DISABLED)
+            self.boton_piso1.configure(state= ctk.DISABLED)
+            self.boton_piso2.configure(state=ctk.DISABLED)
+            self.boton_piso3.configure(state=ctk.DISABLED)
+            self.boton_carro.configure(state=ctk.DISABLED)
+            self.boton_moto.configure(state=ctk.DISABLED)
+            self.boton_mr.configure(state=ctk.DISABLED)
+            self.boton_verSeccion.configure(state=ctk.DISABLED)
+            self.boton_cambiarSeccion.configure(state=ctk.NORMAL)
+            self.seccion_estado = True
     
     def cambiarSeccion(self):
-        if self.seccion_estado:
+        if self.seccion_estado == True:
             # Destruir botones existentes
             for boton in self.botonesCarro:
                 boton.destroy()
@@ -275,14 +286,21 @@ class Parqueadero:
                 boton.destroy()
             self.botonesMR.clear()
             #Volver a habilitar los botones
-            self.botonPiso1.configure(state=ctk.ACTIVE)
-            self.botonPiso2.configure(state=ctk.ACTIVE)
-            self.botonPiso3.configure(state=ctk.ACTIVE)
-            self.botonCarro.configure(state=ctk.ACTIVE)
-            self.botonMoto.configure(state=ctk.ACTIVE)
-            self.botonMR.configure(state=ctk.ACTIVE)
-            
-            self.seccion_estado = True
+            self.panel2.configure(height= 0, width=0)
+            self.boton_piso1.configure(state= ctk.NORMAL)
+            self.boton_piso2.configure(state=ctk.NORMAL)
+            self.boton_piso3.configure(state=ctk.NORMAL)
+            self.boton_carro.configure(state=ctk.NORMAL)
+            self.boton_moto.configure(state=ctk.NORMAL)
+            self.boton_mr.configure(state=ctk.NORMAL)
+            self.boton_verSeccion.configure(state=ctk.NORMAL)
+            self.boton_cambiarSeccion.configure(state=ctk.DISABLED)
+            self.piso_label.configure(text= f"Piso: Sin seleccionar")
+            self.pisoSeleccionado = None
+            self.seccion_label.configure(text = f"Sección: Sin seleccionar")
+            self.vehiculoSeleccionado = None
+    
+            self.seccion_estado = False
         else:
             messagebox.showinfo("Seleccione una sección", "Actualmente no está mirando ninguna sección")
             
