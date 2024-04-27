@@ -4,7 +4,7 @@ import re
 import tkinter as tk
 from tkinter import messagebox
 import customtkinter as ctk
-from PIL import Image, ImageTk
+from datetime import datetime  
 
 class Parqueadero:
     def __init__(self):
@@ -157,34 +157,105 @@ class Parqueadero:
                               )
         self.panel2.place(relx = 0.5, rely = 0.570, anchor = ctk.CENTER)
         self.panel2.configure(height= 0, width=0)
-        
-        ##############################################################################################################
-        #Panel que se usará para centrar el ingreso/informacion de vehiculos
-        panel3 = ctk.CTkFrame(master=self.principal,
-                              height=580,
+        #############################################################################################################
+        #Panel que se usará para ingresar nuevos vehiculos
+        self.panel3 = ctk.CTkFrame(master=self.principal,
+                              height=280,
                               width=300,
                               corner_radius=15
                               )
-        panel3.place(relx = 0.840, rely = 0.5, anchor = ctk.CENTER)
+        self.panel3.place(relx = 0.840, rely = 0.25, anchor = ctk.CENTER)
         
+        
+        #Titulo agregar vehiculo
+        agregar_vehiculo_titulo = ctk.CTkLabel(master=self.panel3,
+                                            text= "Agregar vehículo",
+                                            font=("Arial", 24)
+                                            )
+        agregar_vehiculo_titulo.place(relx = 0.5, rely = 0.1, anchor = ctk.CENTER)
+        
+        #Para seleccionar el tipo de vehiculo
+        opciones = ["Tipo de vehículo", "Carro", "Moto"]
+        self.agregar_carro_moto = ctk.CTkComboBox(master=self.panel3,
+                                     height= 25,
+                                     width= 180,
+                                     corner_radius=15,
+                                     values= opciones,
+                                     dropdown_hover_color= "gray",
+                                     justify="center",
+                                     state="readonly",
+                                     )
+        self.agregar_carro_moto.set(opciones[0])
+        self.agregar_carro_moto.place(relx = 0.5, rely = 0.250, anchor = ctk.CENTER)
+               
+        #TextField de placa para la busqueda de un vehiculo
+        self.agregar_placa = ctk.CTkEntry(master= self.panel3,
+                                    height= 25,
+                                    width= 180,
+                                    corner_radius= 15,
+                                    placeholder_text= "          Placa del vehículo",
+                                    placeholder_text_color= "gray"                          
+                                    )
+        self.agregar_placa.place(relx = 0.5, rely = 0.4, anchor = ctk.CENTER)
+        
+         #Checkbox para movilidad reducida
+        agregar_movilidad_reducida = ctk.CTkCheckBox(master=self.panel3,
+                                             height=3,
+                                             width=3,
+                                             corner_radius=5,
+                                             text= "Movilidad Reducida")
+        agregar_movilidad_reducida.place(relx = 0.5, rely = 0.550, anchor = ctk.CENTER)
+        
+        #Boton para agregar vehiculo
+        agregar_vehiculo = ctk.CTkButton(master= self.panel3,
+                                        height=25,
+                                        width=180,
+                                        text="Agregar vehículo",
+                                        corner_radius= 15,
+                                        command=self.buscarVehiculo
+                                        )
+        agregar_vehiculo.place(relx = 0.5, rely = 0.7, anchor = ctk.CENTER)
+        
+        #Widget para la hora
+        self.time_label = ctk.CTkLabel(master=self.panel3,
+                                       font=("Bold", 16)
+                                       )
+        self.time_label.place(relx = 0.5, rely= 0.860 , anchor=ctk.CENTER)
+        ##############################################################################################################
+        #Panel que se usará para buscar vehiculos
+        self.panel4 = ctk.CTkFrame(master=self.principal,
+                              height=290,
+                              width=300,
+                              corner_radius=15
+                              )
+        self.panel4.place(relx = 0.840, rely = 0.740, anchor = ctk.CENTER)
+        
+        #Titulo Buscar vehiculo
+        informacion_vehiculo_titulo = ctk.CTkLabel(master=self.panel4,
+                                            text= "Buscar vehículo",
+                                            font=("Arial", 24)
+                                            )
+        informacion_vehiculo_titulo.place(relx = 0.5, rely = 0.1, anchor = ctk.CENTER)
         
         #Titulo "Informacion de vehiculo"
-        informacion_vehiculo_titulo = ctk.CTkLabel(master=panel3,
-                                            text= "Información del vehículo"
+        informacion_vehiculo_titulo = ctk.CTkLabel(master=self.panel4,
+                                            text= "Información del vehículo",
+                                            font=("Arial", 14)
                                             )
-        informacion_vehiculo_titulo.place(relx = 0.5, rely = 0.04, anchor = ctk.CENTER)
+        informacion_vehiculo_titulo.place(relx = 0.5, rely = 0.215, anchor = ctk.CENTER)
         
         #Texto que mostrará la informacion del vehiculo
-        self.informacion_vehiculo = ctk.CTkLabel(master= panel3,
+        self.informacion_vehiculo = ctk.CTkLabel(master= self.panel4,
                                             text= "Sin información",
                                             height=30,
                                             width=50,
+                                            font=("Arial", 16)
                                             )
-        self.informacion_vehiculo.place(relx = 0.5, rely = 0.1, anchor = ctk.CENTER)
+        self.informacion_vehiculo.place(relx = 0.5, rely = 0.330, anchor = ctk.CENTER)
         
         #Para seleccionar el tipo de vehiculo
-        opciones = ["Selecciona una opción", "Carro", "Moto"]
-        self.carro_moto = ctk.CTkComboBox(master=panel3,
+        opciones = ["Tipo de vehículo", "Carro", "Moto"]
+        self.carro_moto = ctk.CTkComboBox(master=self.panel4,
                                      height= 25,
                                      width= 180,
                                      corner_radius=15,
@@ -194,45 +265,45 @@ class Parqueadero:
                                      state="readonly",
                                      )
         self.carro_moto.set(opciones[0])
-        self.carro_moto.place(relx = 0.5, rely = 0.160, anchor = ctk.CENTER)
+        self.carro_moto.place(relx = 0.5, rely = 0.445, anchor = ctk.CENTER)
                
         #TextField de placa para la busqueda de un vehiculo
-        self.buscar_placa = ctk.CTkEntry(master= panel3,
+        self.buscar_placa = ctk.CTkEntry(master= self.panel4,
                                     height= 25,
                                     width= 180,
                                     corner_radius= 15,
                                     placeholder_text= "          Placa del vehículo",
                                     placeholder_text_color= "gray"                          
                                     )
-        self.buscar_placa.place(relx = 0.5, rely = 0.220, anchor = ctk.CENTER)
+        self.buscar_placa.place(relx = 0.5, rely = 0.560, anchor = ctk.CENTER)
         
          #Checkbox para movilidad reducida
-        movilidad_reducida = ctk.CTkCheckBox(master=panel3,
+        movilidad_reducida = ctk.CTkCheckBox(master=self.panel4,
                                              height=3,
                                              width=3,
                                              corner_radius=5,
                                              text= "Movilidad Reducida")
-        movilidad_reducida.place(relx = 0.5, rely = 0.280, anchor = ctk.CENTER)
+        movilidad_reducida.place(relx = 0.5, rely = 0.675, anchor = ctk.CENTER)
         
         #Boton para buscar vehiculo mediante la placa
-        buscar_vehiculo = ctk.CTkButton(master= panel3,
+        buscar_vehiculo = ctk.CTkButton(master= self.panel4,
                                         height=25,
                                         width=180,
                                         text="Buscar vehículo",
                                         corner_radius= 15,
                                         command=self.buscarVehiculo
                                         )
-        buscar_vehiculo.place(relx = 0.5, rely = 0.340, anchor = ctk.CENTER)
+        buscar_vehiculo.place(relx = 0.5, rely = 0.790, anchor = ctk.CENTER)
         
         #Boton eliminar carro
-        eliminar_carro = ctk.CTkButton(master=panel3,
+        eliminar_carro = ctk.CTkButton(master=self.panel4,
                                        text= "Eliminar vehículo",
                                        command=self.eliminarVehiculo,
                                        height= 25,
                                        width= 180,
                                        corner_radius= 15
                                        )
-        eliminar_carro.place(relx = 0.5, rely = 0.400 , anchor = ctk.CENTER)
+        eliminar_carro.place(relx = 0.5, rely = 0.905 , anchor = ctk.CENTER)
         
        
         
@@ -248,8 +319,15 @@ class Parqueadero:
         self.botonesMoto = []
         #Lista de los botones movilidad reducida
         self.botonesMR = []
-        
+        self.update_time()
         self.principal.mainloop()
+    
+    def update_time(self):
+        now = datetime.now()  # Usar datetime.now() para obtener la hora actual
+        current_time = now.strftime("%H:%M:%S")
+        self.time_label.configure(text=f"""Hora actual
+{current_time}""")
+        self.principal.after(1000, self.update_time)  # Actualiza la hora cada segundo
     
     def verSeccion(self):
         if self.pisoSeleccionado == None and self.vehiculoSeleccionado == None:
@@ -299,6 +377,7 @@ class Parqueadero:
             self.pisoSeleccionado = None
             self.seccion_label.configure(text = f"Sección: Sin seleccionar")
             self.vehiculoSeleccionado = None
+            self.informacion_vehiculo.configure(text="Sin información", font= ("Arial", 16))
     
             self.seccion_estado = False
         else:
@@ -526,7 +605,7 @@ class Parqueadero:
         
     def boton_presionado(self, event, id):
         a = self.index_to_position(id)
-        self.informacion_vehiculo.configure(text=a, font= ("Arial", 16))
+        self.informacion_vehiculo.configure(text=a, font= ("Arial", 24))
         
     
     def estacionamiento(self):
