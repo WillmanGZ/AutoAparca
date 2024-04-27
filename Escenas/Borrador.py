@@ -4,6 +4,7 @@ import re
 import tkinter as tk
 from tkinter import messagebox
 import customtkinter as ctk
+from PIL import Image, ImageTk
 
 class Parqueadero:
     def __init__(self):
@@ -156,7 +157,6 @@ class Parqueadero:
                               )
         self.panel2.place(relx = 0.5, rely = 0.570, anchor = ctk.CENTER)
         self.panel2.configure(height= 0, width=0)
-        
         
         ##############################################################################################################
         #Panel que se usará para centrar el ingreso/informacion de vehiculos
