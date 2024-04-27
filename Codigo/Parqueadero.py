@@ -273,21 +273,15 @@ class Parqueadero:
                                             )
         informacion_vehiculo_titulo.place(relx = 0.5, rely = 0.1, anchor = ctk.CENTER)
         
-        #Titulo "Informacion de vehiculo"
-        informacion_vehiculo_titulo = ctk.CTkLabel(master=self.panel4,
-                                            text= "Información del vehículo",
-                                            font=("Arial", 14)
-                                            )
-        informacion_vehiculo_titulo.place(relx = 0.5, rely = 0.215, anchor = ctk.CENTER)
         
         #Texto que mostrará la informacion del vehiculo
         self.informacion_vehiculo = ctk.CTkLabel(master= self.panel4,
-                                            text= "Sin información",
+                                            text= "Información del vehículo",
                                             height=30,
                                             width=50,
-                                            font=("Arial", 16)
+                                            font=("Arial", 20)
                                             )
-        self.informacion_vehiculo.place(relx = 0.5, rely = 0.330, anchor = ctk.CENTER)
+        self.informacion_vehiculo.place(relx = 0.5, rely = 0.270, anchor = ctk.CENTER)
         
         #Para seleccionar el tipo de vehiculo
         opciones = ["Tipo de vehículo", "Carro", "Moto"]
@@ -416,7 +410,7 @@ class Parqueadero:
             self.pisoSeleccionado = None
             self.seccion_label.configure(text = f"Sección: Sin seleccionar")
             self.vehiculoSeleccionado = None
-            self.informacion_vehiculo.configure(text="Sin información", font= ("Arial", 16))
+            self.informacion_vehiculo.configure(text="Información del vehículo", font= ("Arial", 20))
             self.img_logo.place(relx = 0.5, rely = 0.5, anchor=ctk.CENTER)
             self.titulo_programa.place(relx = 0.5, rely= 0.770, anchor=ctk.CENTER)
             self.bienvenido_titulo.place(relx = 0.5, rely = 0.820, anchor = ctk.CENTER)
@@ -739,8 +733,8 @@ class Parqueadero:
 
          # Calcula la fila y la columna
             piso = self.pisoSeleccionado
-            fila = index // 15
-            columna = (index % 15) + 1
+            fila = index // 8
+            columna = (index % 8) + 1
 
          # Convierte el índice de fila a letra (A=65 en ASCII)
             letra_fila = chr(fila + 65)
@@ -791,7 +785,7 @@ class Parqueadero:
         else:
             self.informacion_vehiculo.configure(text=f"""Posición: {a}
 Placa: {vehiculo.placa}
-Tipo: {vehiculo.tipoVehiculo}""", font= ("Arial", 12))
+Tipo: {vehiculo.tipoVehiculo}""", font= ("Arial", 18))
         
     
     def estacionamiento(self):
