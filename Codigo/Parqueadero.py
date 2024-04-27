@@ -1,11 +1,13 @@
 from functools import partial
 import os
+import random
 import re 
 from tkinter import messagebox
 from PIL import Image, ImageTk
 import customtkinter as ctk
 from datetime import datetime  
 from pathlib import Path
+from VehiculoClass import Vehiculo
 
 class Parqueadero:
     def __init__(self):
@@ -67,14 +69,14 @@ class Parqueadero:
         #Titulo del programas
         self.titulo_programa = ctk.CTkLabel(master= self.panel1,
                                        text="AutoAparca V1",
-                                       font=("Courier", 32))
-        self.titulo_programa.place(relx = 0.5, rely= 0.750, anchor=ctk.CENTER)
+                                       font=("Copperplate Gothic Bold", 32))
+        self.titulo_programa.place(relx = 0.5, rely= 0.770, anchor=ctk.CENTER)
         
         #Mnesaje de bienvenida
         self.bienvenido_titulo = ctk.CTkLabel(master= self.panel1,
                                        text="Bienvenido",
-                                       font=("Courier", 14))
-        self.bienvenido_titulo.place(relx = 0.5, rely= 0.815, anchor=ctk.CENTER)
+                                       font=("Arial", 14))
+        self.bienvenido_titulo.place(relx = 0.5, rely= 0.820, anchor=ctk.CENTER)
         
          #Label para saber en qué piso te encuentras
         self.piso_label = ctk.CTkLabel(master= self.panel1,
@@ -221,12 +223,12 @@ class Parqueadero:
         self.agregar_placa.place(relx = 0.5, rely = 0.4, anchor = ctk.CENTER)
         
          #Checkbox para movilidad reducida
-        agregar_movilidad_reducida = ctk.CTkCheckBox(master=self.panel3,
+        self.agregar_movilidad_reducida = ctk.CTkCheckBox(master=self.panel3,
                                              height=3,
                                              width=3,
                                              corner_radius=5,
                                              text= "Movilidad Reducida")
-        agregar_movilidad_reducida.place(relx = 0.5, rely = 0.550, anchor = ctk.CENTER)
+        self.agregar_movilidad_reducida.place(relx = 0.5, rely = 0.550, anchor = ctk.CENTER)
         
         #Boton para agregar vehiculo
         agregar_vehiculo = ctk.CTkButton(master= self.panel3,
@@ -234,7 +236,7 @@ class Parqueadero:
                                         width=180,
                                         text="Agregar vehículo",
                                         corner_radius= 15,
-                                        command=self.buscarVehiculo
+                                        command=self.agregarVehiculo
                                         )
         agregar_vehiculo.place(relx = 0.5, rely = 0.7, anchor = ctk.CENTER)
         
@@ -370,8 +372,8 @@ class Parqueadero:
             self.boton_verSeccion.configure(state=ctk.DISABLED)
             self.boton_cambiarSeccion.configure(state=ctk.NORMAL)
             self.img_logo.place_forget()
-            self.titulo_programa.configure(state=ctk.DISABLED)
-            self.bienvenido_titulo.configure(state=ctk.DISABLED)
+            self.titulo_programa.place_forget()
+            self.bienvenido_titulo.place_forget()
             self.seccion_estado = True
     
     def cambiarSeccion(self):
@@ -404,18 +406,12 @@ class Parqueadero:
             self.vehiculoSeleccionado = None
             self.informacion_vehiculo.configure(text="Sin información", font= ("Arial", 16))
             self.img_logo.place(relx = 0.5, rely = 0.5, anchor=ctk.CENTER)
-            self.titulo_programa.configure(state=ctk.NORMAL)
+            self.titulo_programa.place(relx = 0.5, rely= 0.770, anchor=ctk.CENTER)
+            self.bienvenido_titulo.place(relx = 0.5, rely = 0.820, anchor = ctk.CENTER)
             self.bienvenido_titulo.configure(state=ctk.NORMAL)
     
             self.seccion_estado = False
-        else:
-            messagebox.showinfo("Seleccione una sección", "Actualmente no está mirando ninguna sección")
-            
-            
-            
-        
-    def botonesPosiciones(self): #Función que se usará para los botones del parqueadero(Solo los de disponibilidad)
-            print("Hola")
+                        
 
     def botonPiso1(self):
         self.pisoSeleccionado = 1
@@ -493,10 +489,137 @@ class Parqueadero:
     def buscarVehiculo(self):
         placa = self.buscar_placa.get().upper()
         self.verificarPlaca(placa)
+    
+    def agregarVehiculo(self):###############################################################
+        placa = self.agregar_placa.get().upper()
+        if self.verificarPlacaAgregar(placa) and self.buscar_placa_method(placa) == None:
+            tipo_vehiculo = self.agregar_carro_moto.get()
+            movilidad_reducida = self.agregar_movilidad_reducida.get()
+            nuevoVehiculo = Vehiculo(placa, tipo_vehiculo, movilidad_reducida)
+            
+            espacio_encontrado = False
+            while not espacio_encontrado:
+                if tipo_vehiculo == "Carro" and movilidad_reducida == 0:
+                    piso = random.randint(1, 3)
+                    posicion = random.randint(0,79)
+                    if self.pisos[piso][f"carros{piso}"][posicion] == None:
+                        self.pisos[piso][f"carros{piso}"][posicion] = nuevoVehiculo
+                        self.pisoSeleccionado = piso
+                        self.vehiculoSeleccionado = tipo_vehiculo
+                        espacio_encontrado = True
+                
+                elif tipo_vehiculo == "Moto:" and movilidad_reducida == 0:
+                    piso = random.randint(1, 3)
+                    posicion = random.randint(0,119)
+                    if self.pisos[piso][f"motos{piso}"][posicion] == None:
+                        self.pisos[piso][f"motos{piso}"][posicion] = nuevoVehiculo
+                        self.pisoSeleccionado = piso
+                        self.vehiculoSeleccionado = tipo_vehiculo
+                        espacio_encontrado = True
+                
+                elif movilidad_reducida == 1:
+                    piso = random.randint(1, 3)
+                    posicion = random.randint(0,9)
+                    if self.pisos[piso][f"movilidadreducida{piso}"][posicion] == None:
+                        self.pisos[piso][f"movilidadreducida{piso}"][posicion] = nuevoVehiculo
+                        self.pisoSeleccionado = piso
+                        self.vehiculoSeleccionado = tipo_vehiculo
+                        espacio_encontrado = True
+            
+            if espacio_encontrado:
+                messagebox.showinfo("Vehiculo estacionado", "El vehículo fué estacionado correctamente")
+                if movilidad_reducida == 1:
+                    self.vehiculoSeleccionado = "Movilidad Reducida"
+                self.verSeccion()
+                self.piso_label.configure(text= f"Piso: {self.pisoSeleccionado}")
+                self.seccion_label.configure(text = f"Sección: {self.vehiculoSeleccionado}")
+            else:
+                messagebox.showerror("Sin espacio", "No se encontró espacios disponibles en el estacionamiento")
+            print(nuevoVehiculo.__repr__())
        
         
     def eliminarVehiculo(self):
         print("Eliminar vehiculo")
+    
+    
+    def buscar_placa_method(self, placa):
+        carros1 = self.pisos[1]["carros1"]
+        carros2 =self.pisos[2]["carros2"]
+        carros3 = self.pisos[3]["carros3"]
+        motos1 = self.pisos[1]["motos1"]
+        motos2 = self.pisos[2]["motos2"]
+        motos3 = self.pisos[3]["motos3"]
+        mr1= self.pisos[1]["movilidadreducida1"]
+        mr2= self.pisos[2]["movilidadreducida2"]
+        mr3 = self.pisos[3]["movilidadreducida3"]
+        
+        for vehiculo in carros1:
+            if vehiculo is not None and vehiculo.placa == placa:
+                messagebox.showerror("Vehículo existente", "La placa del vehículo ya se encuentra registrada")
+                return vehiculo
+        
+        for vehiculo in carros2:
+            if vehiculo is not None and vehiculo.placa == placa:
+                messagebox.showerror("Vehículo existente", "La placa del vehículo ya se encuentra registrada")
+                return vehiculo
+            
+        for vehiculo in carros3:
+            if vehiculo is not None and vehiculo.placa == placa:
+                messagebox.showerror("Vehículo existente", "La placa del vehículo ya se encuentra registrada")
+                return vehiculo
+            
+        for vehiculo in motos1:
+            if vehiculo is not None and vehiculo.placa == placa:
+                messagebox.showerror("Vehículo existente", "La placa del vehículo ya se encuentra registrada")
+                return vehiculo
+            
+        for vehiculo in motos2:
+            if vehiculo is not None and vehiculo.placa == placa:
+                messagebox.showerror("Vehículo existente", "La placa del vehículo ya se encuentra registrada")
+                return vehiculo
+            
+        for vehiculo in motos3:
+            if vehiculo is not None and vehiculo.placa == placa:
+                messagebox.showerror("Vehículo existente", "La placa del vehículo ya se encuentra registrada")
+                return vehiculo
+            
+        for vehiculo in mr1:
+            if vehiculo is not None and vehiculo.placa == placa:
+                messagebox.showerror("Vehículo existente", "La placa del vehículo ya se encuentra registrada")
+                return vehiculo
+            
+        for vehiculo in mr2:
+            if vehiculo is not None and vehiculo.placa == placa:
+                messagebox.showerror("Vehículo existente", "La placa del vehículo ya se encuentra registrada")
+                return vehiculo
+            
+        for vehiculo in mr3:
+            if vehiculo is not None and vehiculo.placa == placa:
+                messagebox.showerror("Vehículo existente", "La placa del vehículo ya se encuentra registrada")
+                return vehiculo
+        
+        return None
+    
+    #Para verificar si la placa es valida
+    def verificarPlacaAgregar(self, placa):
+        if placa == "":
+            messagebox.showwarning("Digite su placa", "Porfavor digite su placa")
+            return False
+        else:
+            if self.agregar_carro_moto.get() == "Carro":
+                if self.formatoPlacaCarro(placa):
+                    return True
+                else:
+                    messagebox.showerror("Formato Incorrecto", "Por favor, digite una placa con el formato XXX000 (Sin espacios entre los dígitos)")
+                    return False
+            elif self.agregar_carro_moto.get() == "Moto":
+                if self.formatoPlacaMoto(placa):
+                    return True
+                else:
+                    messagebox.showerror("Formato incorrecto", "Por favor, digite una placa con el formato XXX000 o XXX 00X (Sin espacios entre los dígitos)")
+                    return False
+            else:
+                messagebox.showwarning("Elegir tipo de vehículo", "Debe elegir el tipo de vehículo")
     
     #Para verificar si la placa es valida
     def verificarPlaca(self, placa):
@@ -513,7 +636,6 @@ class Parqueadero:
                     return False
             elif self.carro_moto.get() == "Moto":
                 if self.formatoPlacaMoto(placa):
-                    messagebox.showinfo("Correcto", "Formato Correcto")
                     return True
                 else:
                     messagebox.showerror("Formato incorrecto", "Por favor, digite una placa con el formato XXX000 o XXX 00X (Sin espacios entre los dígitos)")
