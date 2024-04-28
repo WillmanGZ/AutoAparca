@@ -552,15 +552,19 @@ class Parqueadero:
                         seccion = "Movilidad Reducida"
                     else:
                         seccion = tipo_vehiculo
-                    messagebox.showinfo("Vehiculo estacionado", f"El vehículo fué estacionado correctamente en el piso {piso}, sección: {seccion}, posición {nuevoVehiculo.posicion}. Su hora de entrada fué: {nuevoVehiculo.horaEntrada}")
-                    if movilidad_reducida == 1:
-                        self.vehiculoSeleccionado = "Movilidad Reducida"
-                    self.verSeccion()
-                    self.piso_label.configure(text= f"Piso: {self.pisoSeleccionado}")
-                    self.seccion_label.configure(text = f"Sección: {self.vehiculoSeleccionado}")
+                    messagebox.showinfo("Vehiculo estacionado", f"""El vehículo fué estacionado correctamente. Detalles:
+Piso: {piso}
+Sección: {seccion}
+Posición {nuevoVehiculo.posicion}
+Ingreso: {nuevoVehiculo.horaEntrada}""")
                     self.agregar_carro_moto.set(self.opciones[0])
                     self.agregar_movilidad_reducida.deselect()
                     self.agregar_placa.delete(0, ctk.END)
+                    texto_temporal = f"""if movilidad_reducida == 1:
+                        self.vehiculoSeleccionado = "Movilidad Reducida"
+                    self.verSeccion()
+                    self.piso_label.configure(text= f"Piso: {self.pisoSeleccionado}")
+                    self.seccion_label.configure(text = f"Sección: {self.vehiculoSeleccionado}")"""
                 else:
                     messagebox.showerror("Sin espacio", "No se encontró espacios disponibles en el estacionamiento")
         
@@ -593,65 +597,70 @@ class Parqueadero:
             messagebox.showinfo("Costo a pagar", f"El costo a pagar es de: {costo}")
             placa = vehiculoSeleccionado.placa
             
+            vehiculo_eliminado = False
             c = 0
             for vehiculo in self.pisos[1]["carros1"]:
                 if vehiculo is not None and vehiculo.placa == placa:
                     self.pisos[1]["carros1"][c] = None
-                    messagebox.showinfo("Vehículo eliminado", "El vehículo fué eliminado exitosamente")
+                    vehiculo_eliminado = True
                 c +=1
             c= 0
             for vehiculo in self.pisos[2]["carros2"]:
                 if vehiculo is not None and vehiculo.placa == placa:
                     self.pisos[2]["carros2"][c]= None
-                    messagebox.showinfo("Vehículo eliminado", "El vehículo fué eliminado exitosamente")
+                    vehiculo_eliminado = True
                 c +=1
             c= 0
             for vehiculo in self.pisos[3]["carros3"]:
                 if vehiculo is not None and vehiculo.placa == placa:
                     self.pisos[3]["carros3"][c]= None
-                    messagebox.showinfo("Vehículo eliminado", "El vehículo fué eliminado exitosamente")
+                    vehiculo_eliminado = True
                 c +=1
             c= 0
             for vehiculo in self.pisos[1]["motos1"]:
                 if vehiculo is not None and vehiculo.placa == placa:
                     self.pisos[1]["motos1"][c]= None
-                    messagebox.showinfo("Vehículo eliminado", "El vehículo fué eliminado exitosamente")
+                    vehiculo_eliminado = True
                 c +=1
             c= 0
             for vehiculo in self.pisos[2]["motos2"]:
                 if vehiculo is not None and vehiculo.placa == placa:
                     self.pisos[2]["motos2"][c]= None
-                    messagebox.showinfo("Vehículo eliminado", "El vehículo fué eliminado exitosamente")
+                    vehiculo_eliminado = True
                 c +=1
             c= 0
             for vehiculo in self.pisos[3]["motos3"]:
                 if vehiculo is not None and vehiculo.placa == placa:
                     self.pisos[3]["motos3"][c]= None
-                    messagebox.showinfo("Vehículo eliminado", "El vehículo fué eliminado exitosamente")
+                    vehiculo_eliminado = True
                 c +=1
             c= 0
             for vehiculo in self.pisos[1]["movilidadreducida1"]:
                 if vehiculo is not None and vehiculo.placa == placa:
                     self.pisos[1]["movilidadreducida1"][c]= None
-                    messagebox.showinfo("Vehículo eliminado", "El vehículo fué eliminado exitosamente")
+                    vehiculo_eliminado = True
                 c +=1
             c= 0
             for vehiculo in self.pisos[2]["movilidadreducida2"]:
                 if vehiculo is not None and vehiculo.placa == placa:
                     self.pisos[2]["movilidadreducida2"][c]= None
-                    messagebox.showinfo("Vehículo eliminado", "El vehículo fué eliminado exitosamente")
+                    vehiculo_eliminado = True
                 c +=1
             c= 0
             for vehiculo in self.pisos[3]["movilidadreducida3"]:
                 if vehiculo is not None and vehiculo.placa == placa:
                     self.pisos[3]["movilidadreducida3"][c]= None
-                    messagebox.showinfo("Vehículo eliminado", "El vehículo fué eliminado exitosamente")
+                    vehiculo_eliminado = True
+                    
                 c +=1
-            self.estacionamiento()
-            self.resultadoBusqueda = None
-            self.informacion_vehiculo.configure(text="Información del vehículo", font= ("Arial", 20))
-            self.eliminar_carro.configure(state=ctk.DISABLED)
-            self.buscar_otrovehiculo()
+            
+            if vehiculo_eliminado:
+                messagebox.showinfo("Vehículo eliminado", "El vehículo fué eliminado exitosamente")
+                self.estacionamiento()
+                self.resultadoBusqueda = None
+                self.informacion_vehiculo.configure(text="Información del vehículo", font= ("Arial", 20))
+                self.eliminar_carro.configure(state=ctk.DISABLED)
+                self.buscar_otrovehiculo()
             
     
     
