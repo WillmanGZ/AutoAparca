@@ -2,7 +2,6 @@ from functools import partial
 import os
 import random
 import re 
-import time
 from tkinter import messagebox
 from PIL import Image, ImageTk
 import customtkinter as ctk
@@ -1476,4 +1475,3 @@ Ingreso: {vehiculo.horaEntrada}""", font= ("Arial", 18))
                     self.infoMR3.append(self.estadoBotones(i))
                 self.botonesMR.append(boton)
               
-crazy = Parqueadero()
