@@ -558,11 +558,12 @@ class Parqueadero:
                     self.verSeccion()
                     self.piso_label.configure(text= f"Piso: {self.pisoSeleccionado}")
                     self.seccion_label.configure(text = f"Sección: {self.vehiculoSeleccionado}")
+                    self.agregar_carro_moto.set(self.opciones[0])
+                    self.agregar_movilidad_reducida.deselect()
+                    self.agregar_placa.delete(0, ctk.END)
                 else:
                     messagebox.showerror("Sin espacio", "No se encontró espacios disponibles en el estacionamiento")
-        self.agregar_carro_moto.set(self.opciones[0])
-        self.agregar_movilidad_reducida.deselect()
-        self.agregar_placa.delete(0, ctk.END)
+        
        
     
     def calcular_tarifa(self,vehiculo):
@@ -784,11 +785,57 @@ Ingreso: {vehiculo.horaEntrada}""", font= ("Arial", 18))
             self.buscarOtroVehiculo.place(relx = 0.5, rely = 0.85 , anchor = ctk.CENTER)
             self.tituloDetalles.place(relx = 0.5, rely = 0.150, anchor = ctk.CENTER)
             
+            #Pa que te redireccione a donde está en el estacionamiento
+            posicion = vehiculo.posicion
+            movilidad_reducida = vehiculo.movilidadReducida
+            tipo = vehiculo.tipoVehiculo
+            piso = int(posicion[1])
+            
+            if movilidad_reducida == 0:
+                self.pisoSeleccionado = piso
+                self.vehiculoSeleccionado = tipo
+                self.panel2.configure(height= 480, width=650)
+                self.estacionamiento()
+                self.boton_piso1.configure(state= ctk.DISABLED)
+                self.boton_piso2.configure(state=ctk.DISABLED)
+                self.boton_piso3.configure(state=ctk.DISABLED)
+                self.boton_carro.configure(state=ctk.DISABLED)
+                self.boton_moto.configure(state=ctk.DISABLED)
+                self.boton_mr.configure(state=ctk.DISABLED)
+                self.boton_verSeccion.configure(state=ctk.DISABLED)
+                self.boton_cambiarSeccion.configure(state=ctk.NORMAL)
+                self.img_logo.place_forget()
+                self.titulo_programa.place_forget()
+                self.bienvenido_titulo.place_forget()
+                self.seccion_estado = True
+                self.piso_label.configure(text= f"Piso: {self.pisoSeleccionado}")
+                self.seccion_label.configure(text = f"Sección: {self.vehiculoSeleccionado}")
+                
+            elif movilidad_reducida == 1:
+                self.pisoSeleccionado = piso
+                self.vehiculoSeleccionado = "Movilidad Reducida"
+                self.panel2.configure(height= 480, width=650)
+                self.estacionamiento()
+                self.boton_piso1.configure(state= ctk.DISABLED)
+                self.boton_piso2.configure(state=ctk.DISABLED)
+                self.boton_piso3.configure(state=ctk.DISABLED)
+                self.boton_carro.configure(state=ctk.DISABLED)
+                self.boton_moto.configure(state=ctk.DISABLED)
+                self.boton_mr.configure(state=ctk.DISABLED)
+                self.boton_verSeccion.configure(state=ctk.DISABLED)
+                self.boton_cambiarSeccion.configure(state=ctk.NORMAL)
+                self.img_logo.place_forget()
+                self.titulo_programa.place_forget()
+                self.bienvenido_titulo.place_forget()
+                self.seccion_estado = True
+                self.piso_label.configure(text= f"Piso: {self.pisoSeleccionado}")
+                self.seccion_label.configure(text = f"Sección: {self.vehiculoSeleccionado}")
+            
             
     def buscar_otrovehiculo(self):
         self.eliminar_carro.place_forget()
         self.buscarOtroVehiculo.place_forget()
-        self.informacion_vehiculo_titulo.place(relx = 0.5, rely = 0.1, anchor = ctk.CENTER)
+        self.informacion_vehiculo_titulo.place(relx = 0.5, rely = 0.2, anchor = ctk.CENTER)
         self.buscar_placa.place(relx = 0.5, rely = 0.400, anchor = ctk.CENTER)
         self.buscar_vehiculo_boton.place(relx = 0.5, rely = 0.550, anchor = ctk.CENTER)
         self.informacion_vehiculo.place_forget()
@@ -1059,7 +1106,7 @@ Ingreso: {vehiculo.horaEntrada}""", font= ("Arial", 18))
     def estacionamiento(self):
         piso = self.pisoSeleccionado
         vehiculo = self.vehiculoSeleccionado
-
+        
         # Piso 1 y Carro
         if piso == 1 and vehiculo == "Carro":
             num_columnas = 8  
