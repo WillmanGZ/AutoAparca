@@ -6,7 +6,7 @@ import time
 from tkinter import messagebox
 from PIL import Image, ImageTk
 import customtkinter as ctk
-from datetime import datetime  
+from datetime import datetime, timedelta  
 from pathlib import Path
 from VehiculoClass import Vehiculo
 import math
@@ -594,7 +594,15 @@ Ingreso: {nuevoVehiculo.horaEntrada}""")
         else:
             vehiculoSeleccionado = self.resultadoBusqueda
             costo = self.calcular_tarifa(vehiculoSeleccionado)
-            messagebox.showinfo("Costo a pagar", f"El costo a pagar es de: {costo}")
+            fecha_hora_entrada = vehiculoSeleccionado.horaEntrada
+            fecha_hora_salida = datetime.now()
+            diferencia = fecha_hora_salida - fecha_hora_entrada
+            segundos_totales = diferencia.total_seconds()
+            segundos_redondeados = round(segundos_totales)
+            diferencia_redondeada = timedelta(seconds=segundos_redondeados)
+            
+            messagebox.showinfo("Costo a pagar", f"""El costo a pagar es de: {costo}
+Tiempo: {diferencia_redondeada}""")
             placa = vehiculoSeleccionado.placa
             
             vehiculo_eliminado = False
