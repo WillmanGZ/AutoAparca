@@ -9,6 +9,7 @@ import customtkinter as ctk
 from datetime import datetime  
 from pathlib import Path
 from VehiculoClass import Vehiculo
+import math
 
 class Parqueadero:
     def __init__(self):
@@ -492,13 +493,20 @@ class Parqueadero:
         if self.verificarPlaca(placa):
             self.buscar_vehiculo(placa)
     
-    def agregarVehiculo(self):###############################################################
+    def agregarVehiculo(self):
         placa = self.agregar_placa.get().upper()
         if self.verificarPlacaAgregar(placa):
             if self.buscar_placa_method(placa) == None:
                 tipo_vehiculo = self.agregar_carro_moto.get()
                 movilidad_reducida = self.agregar_movilidad_reducida.get()
+                # Obtener la hora actual y formatearla como cadena solo de hora
+                now = datetime.now()
+                hora_entrada = now.strftime("%H:%M:%S")
+
+                # Crear un objeto datetime con la fecha actual y la hora obtenida
+                fecha_hora_entrada = datetime.strptime(f"{now.date()} {hora_entrada}", "%Y-%m-%d %H:%M:%S")
                 nuevoVehiculo = Vehiculo(placa, tipo_vehiculo, movilidad_reducida)
+                nuevoVehiculo.horaEntrada = fecha_hora_entrada
             
                 espacio_encontrado = False
                 while not espacio_encontrado:
@@ -536,7 +544,11 @@ class Parqueadero:
                             espacio_encontrado = True
             
                 if espacio_encontrado:
-                    messagebox.showinfo("Vehiculo estacionado", f"El vehículo fué estacionado correctamente en el piso {piso}, posición {nuevoVehiculo.posicion}")
+                    if movilidad_reducida == 1:
+                        seccion = "Movilidad Reducida"
+                    else:
+                        seccion = tipo_vehiculo
+                    messagebox.showinfo("Vehiculo estacionado", f"El vehículo fué estacionado correctamente en el piso {piso}, sección: {seccion}, posición {nuevoVehiculo.posicion}. Su hora de entrada fué: {nuevoVehiculo.horaEntrada}")
                     if movilidad_reducida == 1:
                         self.vehiculoSeleccionado = "Movilidad Reducida"
                     self.verSeccion()
@@ -546,12 +558,32 @@ class Parqueadero:
                     messagebox.showerror("Sin espacio", "No se encontró espacios disponibles en el estacionamiento")
                 print(nuevoVehiculo.__repr__())
        
+    
+    def calcular_tarifa(self,vehiculo):
+        tarifa_por_media_hora = 1000  # Suponiendo que la tarifa por hora es 2000
+        fecha_hora_entrada = vehiculo.horaEntrada
+        fecha_hora_salida = datetime.now()
+
+        # Calcular la diferencia en tiempo
+        diferencia = fecha_hora_salida - fecha_hora_entrada
         
+        # Convertir la diferencia en medias horas y redondear hacia arriba
+        medias_horas = diferencia.total_seconds() / (30 * 60)
+        medias_horas_cobradas = math.ceil(medias_horas)
+        
+        # Calcular el costo
+        costo = medias_horas_cobradas * tarifa_por_media_hora
+        
+        return costo
+
+
     def eliminarVehiculo(self):
         if self.resultadoBusqueda == None:
             messagebox.showerror("No ha seleccionado ningun vehículo", "Seleccione un vehículo para eliminar")
         else:
             vehiculoSeleccionado = self.resultadoBusqueda
+            costo = self.calcular_tarifa(vehiculoSeleccionado)
+            messagebox.showinfo("Costo a pagar", f"El costo a pagar es de: {costo}")
             placa = vehiculoSeleccionado.placa
             
             c = 0
