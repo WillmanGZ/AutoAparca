@@ -2,11 +2,20 @@ import customtkinter as ctk
 import tkinter as tk
 from pathlib import Path
 from tkinter import messagebox
+import os
 
 from Parqueadero import Parqueadero
 class Login:
     def __init__(self):
+         #Creacion de la ventana Login
+        self.login = ctk.CTk()
+        self.login.title ("Inicio de Sesión")
+        self.login.resizable(False,False)
+        window_width = 600
+        window_height = 440
         base_path = Path(__file__).parent
+        ruta_icono = os.path.join(os.path.dirname(__file__), '..', 'icon.ico')
+        self.login.iconbitmap(ruta_icono)
         self.database_path = base_path / "database" / "database.txt"
         self.db = open(self.database_path, "r")
         self.d = []
@@ -21,13 +30,6 @@ class Login:
         # Configura el estilo de customtkinter
         ctk.set_appearance_mode("System")  # Puede ser "System", "Dark", o "Light"
         ctk.set_default_color_theme("blue")  # Tema de color (hay varios temas disponibles)
-
-        #Creacion de la ventana Login
-        self.login = ctk.CTk()
-        self.login.title ("Inicio de Sesión")
-        self.login.resizable(False,False)
-        window_width = 600
-        window_height = 440
 
         # Calcular la posición x y y para centrar la ventana, y aplicarla
         center_x = (self.login.winfo_screenwidth() - window_width) // 2
@@ -52,7 +54,8 @@ class Login:
         self.campo_contrasena.configure(show="*")  #Para ocultar la contraseña
         self.boton_login= ctk.CTkButton(self.frame_login, width=220 , text="Iniciar Sesion", corner_radius = 6, command= self.boton_click)
         self.boton_login.place(x=50, y=240)
-
+        
+        self.login.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.login.mainloop()    
 
     #BOTON INICIO SESION
@@ -80,5 +83,10 @@ class Login:
 
             # Si no se encuentra ninguna coincidencia, se mostrará un mensaje de error.
             messagebox.showerror("Error", "Credenciales incorrectas. Por favor, inténtelo de nuevo.")
+    
+    def on_closing(self):
+        if messagebox.askokcancel("Salir", "¿Quieres salir de la aplicación?"):
+            messagebox.showinfo("Créditos", "Desarrollado por:\n\nWillman Giraldo\nSamuel Ramos\nAndrea Parra\nSebastian Jimenez\n\n© 2024 Todos los derechos reservados")
+            self.login.destroy()
 
 

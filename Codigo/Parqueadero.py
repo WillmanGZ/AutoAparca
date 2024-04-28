@@ -346,6 +346,7 @@ class Parqueadero:
         #Para seleccionar vehiculos y eliminarlos despues
         self.resultadoBusqueda = None
         
+        self.principal.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.update_time()
         self.principal.mainloop()
     
@@ -600,7 +601,7 @@ Ingreso: {nuevoVehiculo.horaEntrada}""")
             segundos_redondeados = round(segundos_totales)
             diferencia_redondeada = timedelta(seconds=segundos_redondeados)
             
-            messagebox.showinfo("Costo a pagar", f"""El costo a pagar es de: {costo}
+            messagebox.askokcancel("Pagar", f"""El costo a pagar es de: {costo}
 Tiempo: {diferencia_redondeada}""")
             placa = vehiculoSeleccionado.placa
             
@@ -1474,4 +1475,9 @@ Ingreso: {vehiculo.horaEntrada}""", font= ("Arial", 18))
                     boton.configure(fg_color="red", hover_color = "#CC0000")
                     self.infoMR3.append(self.estadoBotones(i))
                 self.botonesMR.append(boton)
+    
+    def on_closing(self):
+        if messagebox.askokcancel("Salir", "¿Quieres salir de la aplicación?"):
+            messagebox.showinfo("Créditos", "Desarrollado por:\n\nWillman Giraldo\nSamuel Ramos\nAndrea Parra\nSebastian Jimenez\n\n© 2024 Todos los derechos reservados")
+            self.principal.destroy()
               
