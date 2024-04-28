@@ -282,9 +282,13 @@ class Parqueadero:
                                             text= "Buscar vehículo",
                                             font=("Arial", 24)
                                             )
-        self.informacion_vehiculo_titulo.place(relx = 0.5, rely = 0.125, anchor = ctk.CENTER)
+        self.informacion_vehiculo_titulo.place(relx = 0.5, rely = 0.2, anchor = ctk.CENTER)
         
-               
+        #Titulo detalles
+        self.tituloDetalles = ctk.CTkLabel(master=self.panel4,
+                                           text="Detalles",
+                                           font=("Arial", 24)) 
+             
         #TextField de placa para la busqueda de un vehiculo
         self.buscar_placa = ctk.CTkEntry(master= self.panel4,
                                     height= 25,
@@ -766,17 +770,19 @@ class Parqueadero:
         else:
             self.informacion_vehiculo.configure(text=f"""Posición: {vehiculo.posicion}
 Placa: {vehiculo.placa}
-Tipo: {vehiculo.tipoVehiculo}""", font= ("Arial", 18))
+Tipo: {vehiculo.tipoVehiculo}
+Ingreso: {vehiculo.horaEntrada}""", font= ("Arial", 18))
             messagebox.showinfo("Vehículo encontrado", "El vehículo ha sido encontrado con éxito, puede ver su información en pantalla")
             self.resultadoBusqueda = vehiculo
             self.eliminar_carro.configure(state=ctk.NORMAL)
-            self.informacion_vehiculo.place(relx = 0.5, rely = 0.5, anchor = ctk.CENTER)
+            self.informacion_vehiculo.place(relx = 0.5, rely = 0.4, anchor = ctk.CENTER)
             self.informacion_vehiculo_titulo.place_forget()
             self.buscar_placa.delete(0, ctk.END)
             self.buscar_placa.place_forget()
             self.buscar_vehiculo_boton.place_forget()
             self.eliminar_carro.place(relx = 0.5, rely=0.75, anchor = ctk.CENTER)
             self.buscarOtroVehiculo.place(relx = 0.5, rely = 0.85 , anchor = ctk.CENTER)
+            self.tituloDetalles.place(relx = 0.5, rely = 0.150, anchor = ctk.CENTER)
             
             
     def buscar_otrovehiculo(self):
@@ -786,6 +792,7 @@ Tipo: {vehiculo.tipoVehiculo}""", font= ("Arial", 18))
         self.buscar_placa.place(relx = 0.5, rely = 0.400, anchor = ctk.CENTER)
         self.buscar_vehiculo_boton.place(relx = 0.5, rely = 0.550, anchor = ctk.CENTER)
         self.informacion_vehiculo.place_forget()
+        self.tituloDetalles.place_forget()
             
     #Para verificar si la placa es valida
     def verificarPlacaAgregar(self, placa):
@@ -1022,20 +1029,24 @@ Tipo: {vehiculo.tipoVehiculo}""", font= ("Arial", 18))
             self.informacion_vehiculo.configure(text=a, font= ("Arial", 24))
             self.resultadoBusqueda = None
             self.eliminar_carro.configure(state=ctk.NORMAL)
-            self.informacion_vehiculo.place(relx = 0.5, rely = 0.5, anchor = ctk.CENTER)
+            self.informacion_vehiculo.place(relx = 0.5, rely = 0.4, anchor = ctk.CENTER)
             self.informacion_vehiculo_titulo.place_forget()
             self.buscar_placa.delete(0, ctk.END)
             self.buscar_placa.place_forget()
             self.buscar_vehiculo_boton.place_forget()
+            self.eliminar_carro.place_forget()
             self.buscarOtroVehiculo.place(relx = 0.5, rely = 0.85 , anchor = ctk.CENTER)
+            self.tituloDetalles.place(relx = 0.5, rely = 0.150, anchor = ctk.CENTER)
             
         else:
+            self.tituloDetalles.place(relx = 0.5, rely = 0.150, anchor = ctk.CENTER)
             self.informacion_vehiculo.configure(text=f"""Posición: {a}
 Placa: {vehiculo.placa}
-Tipo: {vehiculo.tipoVehiculo}""", font= ("Arial", 18))
+Tipo: {vehiculo.tipoVehiculo}
+Ingreso: {vehiculo.horaEntrada}""", font= ("Arial", 18))
             self.resultadoBusqueda = vehiculo
             self.eliminar_carro.configure(state=ctk.NORMAL)
-            self.informacion_vehiculo.place(relx = 0.5, rely = 0.5, anchor = ctk.CENTER)
+            self.informacion_vehiculo.place(relx = 0.5, rely = 0.4, anchor = ctk.CENTER)
             self.informacion_vehiculo_titulo.place_forget()
             self.buscar_placa.delete(0, ctk.END)
             self.buscar_placa.place_forget()
