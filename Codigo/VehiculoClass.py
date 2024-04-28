@@ -3,6 +3,8 @@ class Vehiculo:
         self._placa = placa
         self._tipoVehiculo = tipoVehiculo
         self._movilidadReducida = movilidadReducida
+        self._posicion = None
+        self._horaEntrada = None
 
     @property
     def placa(self): #Getter placa
@@ -27,6 +29,22 @@ class Vehiculo:
     @movilidadReducida.setter
     def movilidadReducida(self, movilidadReducida): #Setter movilidad reducida
         self._movilidadReducida = movilidadReducida
+        
+    @property
+    def posicion(self): #Getter posicion
+        return self._posicion
+
+    @posicion.setter
+    def posicion(self, nuevaPosicion): #Setter posicion
+        self._posicion = nuevaPosicion
+        
+    @property
+    def horaEntrada(self): #Getter hora de entrada
+        return self._horaEntrada
+
+    @horaEntrada.setter
+    def horaEntrada(self, nuevaHora): #Setter hora de entrada
+        self._horaEntrada = nuevaHora
     
     def __repr__(self): #Algo asi como el toString
-        return f"Vehículo {self._placa}, Tipo: {self._tipoVehiculo}, Movilidad Reducida: {self._movilidadReducida}"
+        return f"Vehículo {self._placa}, Tipo: {self._tipoVehiculo}, Movilidad Reducida: {self._movilidadReducida}, Posición: {self._posicion}, Hora de entrada: {self._horaEntrada}"
