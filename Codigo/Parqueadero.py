@@ -212,17 +212,17 @@ class Parqueadero:
         agregar_vehiculo_titulo.place(relx = 0.5, rely = 0.1, anchor = ctk.CENTER)
         
         #Para seleccionar el tipo de vehiculo
-        opciones = ["Tipo de vehículo", "Carro", "Moto"]
+        self.opciones = ["Tipo de vehículo", "Carro", "Moto"]
         self.agregar_carro_moto = ctk.CTkComboBox(master=self.panel3,
                                      height= 25,
                                      width= 180,
                                      corner_radius=15,
-                                     values= opciones,
+                                     values= self.opciones,
                                      dropdown_hover_color= "gray",
                                      justify="center",
                                      state="readonly",
                                      )
-        self.agregar_carro_moto.set(opciones[0])
+        self.agregar_carro_moto.set(self.opciones[0])
         self.agregar_carro_moto.place(relx = 0.5, rely = 0.250, anchor = ctk.CENTER)
                
         #TextField de placa para la busqueda de un vehiculo
@@ -275,27 +275,15 @@ class Parqueadero:
                                             font=("Arial", 20)
                                             )
         self.informacion_vehiculo.place(relx = 0.5, rely = 0.15, anchor = ctk.CENTER)
+        self.informacion_vehiculo.place_forget()
         
         #Titulo Buscar vehiculo
-        informacion_vehiculo_titulo = ctk.CTkLabel(master=self.panel4,
+        self.informacion_vehiculo_titulo = ctk.CTkLabel(master=self.panel4,
                                             text= "Buscar vehículo",
                                             font=("Arial", 24)
                                             )
-        informacion_vehiculo_titulo.place(relx = 0.5, rely = 0.45, anchor = ctk.CENTER)
+        self.informacion_vehiculo_titulo.place(relx = 0.5, rely = 0.125, anchor = ctk.CENTER)
         
-        #Para seleccionar el tipo de vehiculo
-        opciones = ["Tipo de vehículo", "Carro", "Moto"]
-        self.carro_moto = ctk.CTkComboBox(master=self.panel4,
-                                     height= 25,
-                                     width= 180,
-                                     corner_radius=15,
-                                     values= opciones,
-                                     dropdown_hover_color= "gray",
-                                     justify="center",
-                                     state="readonly",
-                                     )
-        self.carro_moto.set(opciones[0])
-        self.carro_moto.place(relx = 0.5, rely = 0.570, anchor = ctk.CENTER)
                
         #TextField de placa para la busqueda de un vehiculo
         self.buscar_placa = ctk.CTkEntry(master= self.panel4,
@@ -305,27 +293,37 @@ class Parqueadero:
                                     placeholder_text= "          Placa del vehículo",
                                     placeholder_text_color= "gray"                          
                                     )
-        self.buscar_placa.place(relx = 0.5, rely = 0.685, anchor = ctk.CENTER)
+        self.buscar_placa.place(relx = 0.5, rely = 0.420, anchor = ctk.CENTER)
         
         #Boton para buscar vehiculo mediante la placa
-        buscar_vehiculo = ctk.CTkButton(master= self.panel4,
+        self.buscar_vehiculo_boton = ctk.CTkButton(master= self.panel4,
                                         height=25,
                                         width=180,
                                         text="Buscar vehículo",
                                         corner_radius= 15,
                                         command=self.buscarVehiculo
                                         )
-        buscar_vehiculo.place(relx = 0.5, rely = 0.8, anchor = ctk.CENTER)
+        self.buscar_vehiculo_boton.place(relx = 0.5, rely = 0.550, anchor = ctk.CENTER)
         
-        #Boton eliminar carro
-        eliminar_carro = ctk.CTkButton(master=self.panel4,
-                                       text= "Eliminar vehículo",
+        #Boton pagar fianza
+        self.eliminar_carro = ctk.CTkButton(master=self.panel4,
+                                       text= "Pagar fianza",
                                        command=self.eliminarVehiculo,
                                        height= 25,
                                        width= 180,
                                        corner_radius= 15
                                        )
-        eliminar_carro.place(relx = 0.5, rely = 0.915 , anchor = ctk.CENTER)
+        self.eliminar_carro.configure(state=ctk.DISABLED)
+        
+        #Boton buscar otro vehículo
+        self.buscarOtroVehiculo = ctk.CTkButton(master=self.panel4,
+                                       text= "Buscar otro vehículo",
+                                       command=self.buscar_otrovehiculo,
+                                       height= 25,
+                                       width= 180,
+                                       corner_radius= 15
+                                       )
+        self.buscarOtroVehiculo.place_forget()
         
        
         
@@ -411,6 +409,7 @@ class Parqueadero:
             self.titulo_programa.place(relx = 0.5, rely= 0.770, anchor=ctk.CENTER)
             self.bienvenido_titulo.place(relx = 0.5, rely = 0.820, anchor = ctk.CENTER)
             self.bienvenido_titulo.configure(state=ctk.NORMAL)
+            self.buscar_otrovehiculo()
     
             self.seccion_estado = False
                         
@@ -490,8 +489,9 @@ class Parqueadero:
         
     def buscarVehiculo(self):
         placa = self.buscar_placa.get().upper()
-        if self.verificarPlaca(placa):
+        if self.verificarPlaca2(placa):
             self.buscar_vehiculo(placa)
+
     
     def agregarVehiculo(self):
         placa = self.agregar_placa.get().upper()
@@ -556,7 +556,9 @@ class Parqueadero:
                     self.seccion_label.configure(text = f"Sección: {self.vehiculoSeleccionado}")
                 else:
                     messagebox.showerror("Sin espacio", "No se encontró espacios disponibles en el estacionamiento")
-                print(nuevoVehiculo.__repr__())
+        self.agregar_carro_moto.set(self.opciones[0])
+        self.agregar_movilidad_reducida.deselect()
+        self.agregar_placa.delete(0, ctk.END)
        
     
     def calcular_tarifa(self,vehiculo):
@@ -643,6 +645,8 @@ class Parqueadero:
             self.estacionamiento()
             self.resultadoBusqueda = None
             self.informacion_vehiculo.configure(text="Información del vehículo", font= ("Arial", 20))
+            self.eliminar_carro.configure(state=ctk.DISABLED)
+            self.buscar_otrovehiculo()
             
     
     
@@ -765,6 +769,23 @@ Placa: {vehiculo.placa}
 Tipo: {vehiculo.tipoVehiculo}""", font= ("Arial", 18))
             messagebox.showinfo("Vehículo encontrado", "El vehículo ha sido encontrado con éxito, puede ver su información en pantalla")
             self.resultadoBusqueda = vehiculo
+            self.eliminar_carro.configure(state=ctk.NORMAL)
+            self.informacion_vehiculo.place(relx = 0.5, rely = 0.5, anchor = ctk.CENTER)
+            self.informacion_vehiculo_titulo.place_forget()
+            self.buscar_placa.delete(0, ctk.END)
+            self.buscar_placa.place_forget()
+            self.buscar_vehiculo_boton.place_forget()
+            self.eliminar_carro.place(relx = 0.5, rely=0.75, anchor = ctk.CENTER)
+            self.buscarOtroVehiculo.place(relx = 0.5, rely = 0.85 , anchor = ctk.CENTER)
+            
+            
+    def buscar_otrovehiculo(self):
+        self.eliminar_carro.place_forget()
+        self.buscarOtroVehiculo.place_forget()
+        self.informacion_vehiculo_titulo.place(relx = 0.5, rely = 0.1, anchor = ctk.CENTER)
+        self.buscar_placa.place(relx = 0.5, rely = 0.400, anchor = ctk.CENTER)
+        self.buscar_vehiculo_boton.place(relx = 0.5, rely = 0.550, anchor = ctk.CENTER)
+        self.informacion_vehiculo.place_forget()
             
     #Para verificar si la placa es valida
     def verificarPlacaAgregar(self, placa):
@@ -809,6 +830,18 @@ Tipo: {vehiculo.tipoVehiculo}""", font= ("Arial", 18))
             else:
                 messagebox.showwarning("Elegir tipo de vehículo", "Debe elegir el tipo de vehículo")
                 return False
+        
+    def verificarPlaca2(self, placa):
+        if placa == "":
+            messagebox.showwarning("Digite su placa", "Por favor digite su placa")
+            return False
+        elif self.formatoPlacaCarro(placa):
+            return True
+        elif self.formatoPlacaMoto(placa):
+            return True
+        else:
+            messagebox.showerror("Formato Incorrecto", "Por favor, digite una placa con el formato de carro (XXX000) o de moto (XXX000 o XXX 00X)")
+            return False
 
     def formatoPlacaCarro(self, placa):
         # Expresión regular para verificar el formato de placa colombiano
@@ -987,11 +1020,29 @@ Tipo: {vehiculo.tipoVehiculo}""", font= ("Arial", 18))
             
         if vehiculo == None:
             self.informacion_vehiculo.configure(text=a, font= ("Arial", 24))
+            self.resultadoBusqueda = None
+            self.eliminar_carro.configure(state=ctk.NORMAL)
+            self.informacion_vehiculo.place(relx = 0.5, rely = 0.5, anchor = ctk.CENTER)
+            self.informacion_vehiculo_titulo.place_forget()
+            self.buscar_placa.delete(0, ctk.END)
+            self.buscar_placa.place_forget()
+            self.buscar_vehiculo_boton.place_forget()
+            self.buscarOtroVehiculo.place(relx = 0.5, rely = 0.85 , anchor = ctk.CENTER)
+            
         else:
             self.informacion_vehiculo.configure(text=f"""Posición: {a}
 Placa: {vehiculo.placa}
 Tipo: {vehiculo.tipoVehiculo}""", font= ("Arial", 18))
             self.resultadoBusqueda = vehiculo
+            self.eliminar_carro.configure(state=ctk.NORMAL)
+            self.informacion_vehiculo.place(relx = 0.5, rely = 0.5, anchor = ctk.CENTER)
+            self.informacion_vehiculo_titulo.place_forget()
+            self.buscar_placa.delete(0, ctk.END)
+            self.buscar_placa.place_forget()
+            self.buscar_vehiculo_boton.place_forget()
+            self.eliminar_carro.place(relx = 0.5, rely=0.75, anchor = ctk.CENTER)
+            self.buscarOtroVehiculo.place(relx = 0.5, rely = 0.85 , anchor = ctk.CENTER)
+                
         
     
     def estacionamiento(self):
