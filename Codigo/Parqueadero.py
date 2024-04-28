@@ -266,14 +266,6 @@ class Parqueadero:
                               )
         self.panel4.place(relx = 0.840, rely = 0.740, anchor = ctk.CENTER)
         
-        #Titulo Buscar vehiculo
-        informacion_vehiculo_titulo = ctk.CTkLabel(master=self.panel4,
-                                            text= "Buscar vehículo",
-                                            font=("Arial", 24)
-                                            )
-        informacion_vehiculo_titulo.place(relx = 0.5, rely = 0.1, anchor = ctk.CENTER)
-        
-        
         #Texto que mostrará la informacion del vehiculo
         self.informacion_vehiculo = ctk.CTkLabel(master= self.panel4,
                                             text= "Información del vehículo",
@@ -281,7 +273,14 @@ class Parqueadero:
                                             width=50,
                                             font=("Arial", 20)
                                             )
-        self.informacion_vehiculo.place(relx = 0.5, rely = 0.270, anchor = ctk.CENTER)
+        self.informacion_vehiculo.place(relx = 0.5, rely = 0.15, anchor = ctk.CENTER)
+        
+        #Titulo Buscar vehiculo
+        informacion_vehiculo_titulo = ctk.CTkLabel(master=self.panel4,
+                                            text= "Buscar vehículo",
+                                            font=("Arial", 24)
+                                            )
+        informacion_vehiculo_titulo.place(relx = 0.5, rely = 0.45, anchor = ctk.CENTER)
         
         #Para seleccionar el tipo de vehiculo
         opciones = ["Tipo de vehículo", "Carro", "Moto"]
@@ -295,7 +294,7 @@ class Parqueadero:
                                      state="readonly",
                                      )
         self.carro_moto.set(opciones[0])
-        self.carro_moto.place(relx = 0.5, rely = 0.445, anchor = ctk.CENTER)
+        self.carro_moto.place(relx = 0.5, rely = 0.570, anchor = ctk.CENTER)
                
         #TextField de placa para la busqueda de un vehiculo
         self.buscar_placa = ctk.CTkEntry(master= self.panel4,
@@ -305,7 +304,7 @@ class Parqueadero:
                                     placeholder_text= "          Placa del vehículo",
                                     placeholder_text_color= "gray"                          
                                     )
-        self.buscar_placa.place(relx = 0.5, rely = 0.560, anchor = ctk.CENTER)
+        self.buscar_placa.place(relx = 0.5, rely = 0.685, anchor = ctk.CENTER)
         
         #Boton para buscar vehiculo mediante la placa
         buscar_vehiculo = ctk.CTkButton(master= self.panel4,
@@ -315,7 +314,7 @@ class Parqueadero:
                                         corner_radius= 15,
                                         command=self.buscarVehiculo
                                         )
-        buscar_vehiculo.place(relx = 0.5, rely = 0.790, anchor = ctk.CENTER)
+        buscar_vehiculo.place(relx = 0.5, rely = 0.8, anchor = ctk.CENTER)
         
         #Boton eliminar carro
         eliminar_carro = ctk.CTkButton(master=self.panel4,
@@ -325,7 +324,7 @@ class Parqueadero:
                                        width= 180,
                                        corner_radius= 15
                                        )
-        eliminar_carro.place(relx = 0.5, rely = 0.905 , anchor = ctk.CENTER)
+        eliminar_carro.place(relx = 0.5, rely = 0.915 , anchor = ctk.CENTER)
         
        
         
@@ -517,6 +516,8 @@ class Parqueadero:
                     elif tipo_vehiculo == "Moto" and movilidad_reducida == 0:
                         piso = random.randint(1, 3)
                         posicion = random.randint(0,119)
+                        posicionParqueadero = self.index_to_position2(posicion, piso, tipo_vehiculo, movilidad_reducida)
+                        nuevoVehiculo.posicion = posicionParqueadero
                         if self.pisos[piso][f"motos{piso}"][posicion] == None:
                             self.pisos[piso][f"motos{piso}"][posicion] = nuevoVehiculo
                             self.pisoSeleccionado = piso
@@ -526,6 +527,8 @@ class Parqueadero:
                     elif movilidad_reducida == 1:
                         piso = random.randint(1, 3)
                         posicion = random.randint(0,9)
+                        posicionParqueadero = self.index_to_position2(posicion, piso, tipo_vehiculo, movilidad_reducida)
+                        nuevoVehiculo.posicion = posicionParqueadero
                         if self.pisos[piso][f"movilidadreducida{piso}"][posicion] == None:
                             self.pisos[piso][f"movilidadreducida{piso}"][posicion] = nuevoVehiculo
                             self.pisoSeleccionado = piso
@@ -882,7 +885,7 @@ Tipo: {vehiculo.tipoVehiculo}""", font= ("Arial", 18))
             # Formatea la salida como 'A1', 'B2', etc.
             return f"P{piso}{letra_fila}{columna}"
         
-    def index_to_position2(self, index, piso, tipo,  movilidad):
+    def index_to_position2(self, index, piso, tipo, movilidad):
         # Asegúrate de que el índice esté en el rango permitido
         if tipo == "Carro" and movilidad == 0:
             if index < 0 or index >= 80:
