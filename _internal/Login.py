@@ -88,5 +88,3 @@ class Login:
         if messagebox.askokcancel("Salir", "¿Quieres salir de la aplicación?"):
             messagebox.showinfo("Créditos", "Desarrollado por:\n\nWillman Giraldo\nSamuel Ramos\nAndrea Parra\nSebastian Jimenez\n\n© 2024 Todos los derechos reservados")
             self.login.destroy()
-
-

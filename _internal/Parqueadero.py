@@ -19,7 +19,7 @@ class Parqueadero:
         center_x = (self.principal.winfo_screenwidth() - window_width) // 2
         center_y = (self.principal.winfo_screenheight() - window_height) // 2
         self.principal.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
-        self.principal.title("AutoAparca V1")
+        self.principal.title("AutoAparca")
         self.principal.resizable(False,False)
         ruta_icono = os.path.join(os.path.dirname(__file__), '..', 'icon.ico')
         self.principal.iconbitmap(ruta_icono)
@@ -80,7 +80,7 @@ class Parqueadero:
         
         #Titulo del programas
         self.titulo_programa = ctk.CTkLabel(master= self.panel1,
-                                       text="AutoAparca V1",
+                                       text="AutoAparca",
                                        font=("Copperplate Gothic Bold", 32))
         self.titulo_programa.place(relx = 0.5, rely= 0.770, anchor=ctk.CENTER)
         
